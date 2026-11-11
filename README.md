@@ -2,7 +2,7 @@
 
 Your saved posts are a graveyard. Graveyard Killer turns them into a Library in your own Notion. Share a post from your phone, and your computer later watches it, reads what it says and files it. When something you saved is worth doing this week, such as a concert date or a recipe for the weekend, Claude messages you with an offer, and does nothing until you say yes. It needs no server and no API keys.
 
-**Status: early release (0.4.0).** Tested with Claude on Android and on a Mac. A tester ran the Worker end to end on Windows 11 ([#1](https://github.com/andreadorizza/graveyard-killer/issues/1)). iPhone and Linux should work the same way but are untested. The Library is Notion only for now. Claude only: Codex support is being tested ([#3](https://github.com/andreadorizza/graveyard-killer/issues/3)).
+**Status: early release (0.4.1).** Tested with Claude on Android and on a Mac. A tester ran the Worker end to end on Windows 11 ([#1](https://github.com/andreadorizza/graveyard-killer/issues/1)). iPhone and Linux should work the same way but are untested. The Library is Notion only for now. Claude only: Codex support is being tested ([#3](https://github.com/andreadorizza/graveyard-killer/issues/3)).
 
 ## What you need
 

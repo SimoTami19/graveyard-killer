@@ -188,6 +188,27 @@ def test_original_language_automatic_captions_come_before_whisper(
     assert speech_calls(run) == []
 
 
+ACCENTED_VTT = """WEBVTT
+Kind: captions
+Language: it
+
+00:00:00.000 --> 00:00:02.000
+le novità del campo legale &gt;&gt; [musica]
+"""
+
+
+def test_captions_are_read_as_utf8_and_their_entities_decoded(
+    post: Callable[..., Run], media: dict[str, Path]
+) -> None:
+    # yt-dlp writes UTF-8 and keeps HTML entities; Windows' default encoding is not UTF-8.
+    scenario = youtube(media, subtitles={"en": [{"ext": "vtt"}]})
+    scenario["yt-dlp"][1] = {"subs": ACCENTED_VTT}
+
+    run = post("read", VIDEO, scenario=scenario)
+
+    assert run.output["transcript"] == "le novità del campo legale >> [musica]"
+
+
 def test_a_short_link_resolves_to_the_canonical_post_link(
     post: Callable[..., Run], media: dict[str, Path]
 ) -> None:

@@ -23,6 +23,8 @@ from pathlib import Path
 from typing import Any
 
 tool = Path(sys.argv[0]).name
+if tool.lower().endswith(".exe"):  # the Windows launcher made by the test fixture
+    tool = tool[: -len(".exe")]
 argv = sys.argv[1:]
 
 log = Path(os.environ["GK_FAKE_LOG"])

@@ -140,6 +140,18 @@ def speech_model(engine: Engine) -> str:
     return "downloaded" if (Path(cache) / engine.model_cache).is_dir() else "not downloaded"
 
 
+def missing_tools() -> str:
+    """The tools that read needs and cannot find, for the error message.
+
+    Windows leaves FileNotFoundError.filename empty, so the name comes from a lookup.
+    It only looks for .exe files, the only kind post.py starts on Windows, and runs nothing.
+    """
+    names = ["yt-dlp", "gallery-dl", "ffmpeg", "ffprobe", *(engine.program for engine in engines())]
+    suffix = ".exe" if system() == "Windows" else ""
+    gone = [name for name in names if not shutil.which(name + suffix)]
+    return ", ".join(gone) or "a tool"
+
+
 def read(link: str, language: str | None = None) -> dict[str, Any]:
     if not WEB_LINK.match(link):
         # Refused before any tool runs: a "link" such as "--exec=..." would be read as an option.
@@ -148,7 +160,7 @@ def read(link: str, language: str | None = None) -> dict[str, Any]:
     try:
         return read_post(link, folder, language)
     except FileNotFoundError as missing:
-        return not_ok(link, folder, f"{missing.filename} is not installed")
+        return not_ok(link, folder, f"{missing.filename or missing_tools()} is not installed")
     except subprocess.CalledProcessError as broken:
         output = broken.stderr
         if isinstance(output, bytes):

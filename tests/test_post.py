@@ -474,7 +474,7 @@ def test_check_lists_each_missing_tool_with_its_install_command(post: Callable[.
     assert missing.keys() == {"gallery-dl", "ffmpeg", "whisper"}
     assert missing["gallery-dl"] == "uv tool install gallery-dl"
     assert "whisper" in missing["whisper"] and missing["whisper"].startswith("uv tool install")
-    assert "ffmpeg" in missing["ffmpeg"]
+    assert "ffmpeg" in missing["ffmpeg"].lower()  # winget's id is Gyan.FFmpeg
 
 
 def test_clean_deletes_a_work_folder_that_read_made(post: Callable[..., Run], media: dict[str, Path]) -> None:

@@ -19,6 +19,44 @@ FAKE = Path(__file__).parent / "fakes/fake_tool.py"
 FAKE_NAMES = ("yt-dlp", "gallery-dl", "parakeet-mlx", "mlx_whisper", "whisper-ctranslate2", "uv")
 
 
+def link_or_copy(source: str | Path, target: Path) -> None:
+    """A hard link needs no privilege on Windows, unlike a symlink, and is not a new file:
+    a fresh copy of an executable in every test is slow, and Defender scans each one."""
+    try:
+        os.link(source, target)
+    except OSError:  # another volume
+        shutil.copy(source, target)
+
+
+@pytest.fixture(scope="session")
+def fake_launcher(tmp_path_factory: pytest.TempPathFactory) -> Path | None:
+    """On Windows, the fake tool wrapped once in a real .exe.
+
+    post.py starts only .exe tools on Windows, never through cmd.exe. distlib's launcher,
+    the one pip uses for console scripts, runs the fake with Python and passes the
+    arguments untouched.
+    """
+    if os.name != "nt":
+        return None
+    from distlib.scripts import ScriptMaker  # type: ignore[import-untyped]
+
+    maker = ScriptMaker(str(FAKE.parent), str(tmp_path_factory.mktemp("launcher")))
+    maker.executable = sys.executable
+    maker.variants = {""}
+    return Path(maker.make(FAKE.name)[0])
+
+
+def install_fakes(bin_dir: Path, launcher: Path | None) -> None:
+    """Put one fake tool per name in bin_dir, runnable the way post.py runs tools."""
+    for name in FAKE_NAMES:
+        if launcher is None:
+            target = bin_dir / name
+            shutil.copy(FAKE, target)
+            target.chmod(0o755)
+        else:
+            link_or_copy(launcher, bin_dir / f"{name}.exe")
+
+
 def ffmpeg(*args: str) -> None:
     subprocess.run(["ffmpeg", "-v", "error", "-y", *args], check=True)
 
@@ -65,14 +103,11 @@ class Run:
 
 
 @pytest.fixture
-def post(tmp_path: Path) -> Iterator[Callable[..., Run]]:
+def post(tmp_path: Path, fake_launcher: Path | None) -> Iterator[Callable[..., Run]]:
     """Run the post script as the agent does, with a scenario for the fake tools."""
     bin_dir = tmp_path / "bin"
     bin_dir.mkdir()
-    for name in FAKE_NAMES:
-        target = bin_dir / name
-        shutil.copy(FAKE, target)
-        target.chmod(0o755)
+    install_fakes(bin_dir, fake_launcher)
     for real in ("ffmpeg", "ffprobe"):
         found = shutil.which(real)
         if found:
@@ -80,7 +115,7 @@ def post(tmp_path: Path) -> Iterator[Callable[..., Run]]:
             try:
                 link.symlink_to(found)
             except OSError:  # Windows makes symlinks only in Developer Mode or as an admin
-                shutil.copy(found, link)
+                link_or_copy(found, link)
     log = tmp_path / "calls.jsonl"
 
     def run(

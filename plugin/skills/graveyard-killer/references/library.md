@@ -7,10 +7,11 @@ Every Graveyard Killer job reads and writes the Library the same way. This file 
 The **Library** is one Notion page. It holds:
 
 - the **Entries** database, with one row per Entry, titled "Entries" in the Settings language. It is the only database on the Library page, which is how agents find it;
-- a child page titled `Settings`;
-- one child page per **Digest**, titled `Digest YYYY-MM-DD` (see [digest.md](digest.md)).
+- a child page titled `Settings`.
 
-The memory line points to the Library page.
+Libraries made before version 0.4.0 also hold Digest pages, titled `Digest YYYY-MM-DD`. Leave them as they are: the Digest is now given in a chat.
+
+The pointer line, `Graveyard Killer Library: <link>`, points to the Library page.
 
 ## Names
 
@@ -20,19 +21,19 @@ The Library uses the user's own names for fields and Statuses, in their language
 
 | Field | Notion type | Holds |
 | --- | --- | --- |
-| Title | title | A short title in the Settings language |
+| Title | title | A short title in the Settings language. It starts with "⏳ " while the Entry waits for the Worker (Inbox or Buried) |
 | Link | URL | The canonical link, which is also the duplicate key |
 | Platform | select | `Instagram`, `TikTok`, `YouTube` or `Other`. These labels are fixed. The scripts' lowercase `platform` values map to them |
 | Author | text | The account that posted it |
 | Caption | text | The post's own text, in its original language |
 | Category | select | One Category from the Settings |
 | Summary | text | In the Settings language: one or two sentences at Capture, two or three after the Worker |
-| Next action | text | The one thing the user could do with it. When the post gives a date for it (an event, a deadline, an offer that ends), the Next action names that date in full, such as "Book the Roma concert for 14 November 2026", so the Digest can bring it up in time |
+| Next action | text | The one thing the user could do with it. When the post gives a date for it (an event, a deadline, an offer that ends), the Next action names that date in full, such as "Book the Roma concert for 14 November 2026", so a Ping or the Digest can bring it up in time |
 | Tags | multi-select | Free labels in the Settings language, at most 5 per Entry (see [Writing to Notion](#writing-to-notion)) |
 | Status | select | One Status (see below) |
 | Captured | date | The date of the first Capture. Empty for an Entry imported from the Graveyard |
 | Saved | date | The date the user saved the post on the platform, from the Graveyard import. Empty for a Captured Entry |
-| Processed | date | The date the Worker finished it. The Digest uses it |
+| Processed | date | The date the Worker finished it, as Processed or Unavailable. The Worker's limits and the Digest use it |
 | Note | text | Something about this Entry that needs attention, in the Settings language. It is empty when nothing does |
 
 Each Category can add its own fields. They are named in the Settings and exist as extra text properties in the Entries database.
@@ -49,7 +50,7 @@ The Worker knows more about a post than Capture did, and the user may have edite
 
 | Field | The Worker |
 | --- | --- |
-| Title | Replaces it only if it is empty, a bare link, or a title that only names the platform and maybe the author, as Capture writes with no preview ("Post Instagram", "Post TikTok di ia_dori", "Post Instagram (solo link)") |
+| Title | Removes the leading "⏳ " once the Entry leaves the Inbox or the Graveyard. Replaces the rest only if it is empty, a bare link, or a title that only names the platform and maybe the author, as Capture writes with no preview ("Post Instagram", "Post TikTok di ia_dori", "Post Instagram (solo link)") |
 | Category | Replaces it only if it is the fallback Category |
 | Summary, Next action | Rewrites them from the full post |
 | Tags | Adds Tags and never removes one |
@@ -71,12 +72,14 @@ When a resolved link shows that two Entries hold the same post, the older Entry 
 
 | Status | Meaning |
 | --- | --- |
-| Inbox | Captured, not processed yet |
+| Inbox | Captured, waiting for the Worker to read it: a placeholder |
 | Processed | The Worker finished it |
 | Used | The user did its Next action |
 | Dismissed | The user chose not to act on it |
 | Unavailable | The post was deleted or made private before the Worker could download it |
 | Buried | Imported from the Graveyard, waiting to be dug up |
+
+A row in Entries with no Status and a link counts as Inbox: Notion's share sheet, or the user by hand, added it. The Worker adopts it ([worker.md](worker.md#adopt-a-shared-entry)).
 
 ## The Settings page
 
@@ -107,7 +110,7 @@ Italiano
 ## Statuses
 | Status | Label in this Library |
 | --- | --- |
-| Inbox | In arrivo |
+| Inbox | Da leggere |
 | Processed | Elaborato |
 | Used | Usato |
 | Dismissed | Scartato |
@@ -122,17 +125,42 @@ Italiano
 | Altro | Everything else | | yes |
 
 ## Schedule
-Domenica 10:00
+Ogni giorno 13:00
+
+## Limits
+| Setting | Value |
+| --- | --- |
+| Downloads per day | 20 |
+| Downloads per week | 100 |
+
+## Pings
+| Setting | Value |
+| --- | --- |
+| Ping by | push |
+| Last Ping | 2026-11-10 |
+| Last Digest | 2026-11-03 |
+
+## Preferences
+| Kind | Answer |
+| --- | --- |
+| Ricette · lista della spesa | sempre |
+| Eventi · calendario | chiedimi |
 
 ## Graveyard
 | Setting | Value |
 | --- | --- |
-| Dig up per run | 10 |
 | Dig up next | Ricette |
 | Last import | 2026-10-26 |
 ```
 
-Exactly one Category is the fallback. The Schedule is the weekday and the local time of the weekly Worker run. A new Library starts with "Dig up per run" at 10 and the other Graveyard settings empty. In the Graveyard section, "Dig up next" is a Category the user asked to see first, or empty; "Last import" is the date of the last Graveyard import, or empty. The Category options in the Entries database are the Category names from this table.
+- **Categories.** Exactly one is the fallback. The Category options in the Entries database are the Category names from this table.
+- **Schedule.** When the Worker runs, in local time: every day by default, or the weekdays the user chose.
+- **Limits.** How many posts the Worker may download, counted from the Processed dates ([worker.md](worker.md#steps), step 2).
+- **Pings.** "Ping by" is how a Ping reaches the user: `push`, `email`, `notion` or `none` ([ping.md](ping.md#send-it)). "Last Ping" and "Last Digest" are dates, or empty.
+- **Preferences.** One row per kind of Proposal: its Category and action, and the user's answer (always, ask me or never, in the Settings language). It starts empty ([ping.md](ping.md)).
+- **Graveyard.** "Dig up next" is a Category the user asked to see first, or empty. "Last import" is the date of the last Graveyard import, or empty.
+
+A new Library starts with the Limits above and every other new setting empty. A Library made before version 0.4.0 may lack a section, or still hold "Dig up per run", which the Limits replace. Use the defaults for a missing section, and add the section, in the order shown above, the first time you write to it.
 
 ## Finding an Entry by its link
 

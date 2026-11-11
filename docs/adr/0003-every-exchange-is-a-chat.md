@@ -1,0 +1,20 @@
+# Every exchange with the user is a chat
+
+Users will not open a recap page in Notion, so v1's weekly Digest pages would go unread. So the agent talks to the user only in a chat. A Worker run that has something for the user sends a **Ping**: it alerts the user and ends its own chat with what it found, and the user answers in that same chat. A run pings only for Proposals on the Entries it just read (a grocery list for a recipe, a calendar event for a dated one; at most 5, the most urgent first) or for something only the user can fix. Otherwise it stays silent, except that after 7 days with no Ping it sends the Digest. The first time a kind of Proposal comes up, the agent asks for a **Preference** (always, ask me, never) and records it in the Settings. "Always" counts as a yes only for the user's own apps. Anything that reaches other people or costs money asks every time.
+
+## Considered Options
+
+- **Digest pages in the Library, with Proposals as checkboxes.** Each run wrote a dated page. Rejected: the user never looks there. Pages already written stay.
+- **A recurring calendar event as the weekly reminder.** No tokens, but it only sends the user to go and look. Rejected.
+- **Answering a Ping in any chat,** with each open offer written on its Entry. It works across devices, but it adds state to every Entry. Rejected for the same-chat rule.
+- **No Ping.** The Library becomes one more graveyard. Rejected.
+
+OpenClaw, xAI's Grok Bot and Claude Duet work the same way: they wake on a schedule, stay silent unless something clears a bar, and keep an approval gate that a stored preference does not remove (their docs, 2026-11-11).
+
+## Consequences
+
+- A scheduled run asks nothing while it works. At its end it waits in its chat for the user's replies.
+- The Ping needs a way to reach the user, chosen at Setup: a push notification, an email to themselves, or a Notion mention. On 2026-11-11 the push tool skipped its notification because the user was active in the Claude app. Whether a push reaches the phone when the user is away, and whether the phone can answer in a scheduled run's chat, is not tested yet.
+- The Settings gain a Pings section (how to reach the user, Last Ping, Last Digest) and a Preferences table.
+- Each Proposal is offered once, in the Ping of the run that reads its Entry. A Digest offers only Proposals about the Library itself, such as tidying or the Graveyard. In any chat the user can still ask for any action.
+- A Proposal's result comes in the chat, or goes to another app on the user's yes.

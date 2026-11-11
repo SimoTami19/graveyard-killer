@@ -34,7 +34,7 @@ You have chosen Capture, found the Library and read its Settings (see SKILL.md).
    - Stop.
 
 4. **Write the Entry's text.** Use the preview and write in the Settings language. Done when every item below has a value or is deliberately empty.
-   - **Title:** a few words that say what the post is about. It is not the caption's first line.
+   - **Title:** "⏳ " and then a few words that say what the post is about, not the caption's first line. The ⏳ marks a placeholder: the Worker has not read the post yet, and it removes the ⏳ when it does.
    - **Summary:** one or two sentences on what the post says.
    - **Next action:** one action that starts with a verb, such as "Try this recipe this weekend".
    - **Category:** the best fit from the Settings. If none fits, use the fallback Category. Use the Settings' Categories exactly as written.
@@ -42,10 +42,10 @@ You have chosen Capture, found the Library and read its Settings (see SKILL.md).
    - **Tags:** up to 3, in the Settings language. Reuse Tags already in the Library where they fit. A new Tag must first be added to the Tag property's options, as [library.md](library.md#writing-to-notion) explains.
 
    **With no preview:**
-   - The Title is exactly "<Platform> post by <author>", or "<Platform> post" when you do not know the author, in the Settings language, for example "Post TikTok". Add nothing to it: the Worker recognises this title and replaces it.
+   - The Title is exactly "⏳ <Platform> post by <author>", or "⏳ <Platform> post" when you do not know the author, in the Settings language, for example "⏳ Post TikTok". Add nothing to it: the Worker recognises this title and replaces it.
    - Leave Summary and Next action empty.
    - Use the fallback Category.
-   - Set the Note to say that only the link was saved and the Worker will fill in the rest.
+   - Set the Note to say that only the link was saved and the tidy-up will fill in the rest.
 
 5. **Create the Entry** in the Entries database. Use the Library's field names and its label for Status Inbox, and write text as [library.md](library.md#writing-to-notion) explains. Done when the connector confirms the new Entry. Its fields are:
    - Title, Summary, Next action, Category, Category fields and Tags: from step 4
@@ -57,10 +57,11 @@ You have chosen Capture, found the Library and read its Settings (see SKILL.md).
    - Note: when step 4 set one
 
 6. **Reply** in one or two short lines in the Settings language. Done when you have sent it.
-   - Name the Category and the Title, give the Next action, and link to the Entry.
+   - Name the Category and the Title, give the Next action when there is one, and link to the Entry.
+   - For an Instagram, TikTok or YouTube post, say that this is a placeholder: you cannot watch the post from here, and the user's computer reads it at its next tidy-up. Name no day or time, since the schedule can change.
    - With no preview, say plainly that only the link was saved for now.
 
-   Example shape: "Filed in Recipes: *Crispy chickpea salad*. Next: try it this weekend. [Open](…)"
+   Example shape: "Filed in Recipes: *⏳ Crispy chickpea salad*. Next: try it this weekend. It's a placeholder: your computer watches the video at the next tidy-up. [Open](…)"
 
 ## If you cannot run the script
 

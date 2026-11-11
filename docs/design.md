@@ -1,6 +1,16 @@
 # Graveyard Killer: v1 design
 
-Saved posts die in a folder nobody opens. Graveyard Killer takes a post you share from your phone, works out what it says, files it in your Library, and brings it back to you in a weekly Digest. It needs no server and no API keys. Terms are defined in [GLOSSARY.md](../GLOSSARY.md); the two load-bearing decisions are in [docs/adr/](adr/).
+Saved posts die in a folder nobody opens. Graveyard Killer takes a post you share from your phone, works out what it says, files it in your Library, and brings it back to you in a weekly Digest. It needs no server and no API keys. Terms are defined in [GLOSSARY.md](../GLOSSARY.md); the load-bearing decisions are in [docs/adr/](adr/).
+
+## Changed in 0.4.0
+
+This page records v1. Version 0.4.0 changes it after the launch feedback; where they differ, the skill files and the ADRs win.
+
+- **Saving** goes through Notion's share sheet first, and the Worker adopts the rows it writes ([ADR-0004](adr/0004-notion-share-sheet-captures.md)). Sharing to the Claude app stays as the second way.
+- **Every exchange is a chat** ([ADR-0003](adr/0003-every-exchange-is-a-chat.md)). No more Digest pages: a run sends a Ping with Proposals or fixes, remembers Preferences, and brings the Digest after a week with no Ping.
+- **The Worker runs daily** on Sonnet, through its own `graveyard-killer-worker` skill, within download limits (20 a day, 100 a week) and the plan's usage ([ADR-0001](adr/0001-no-server-no-api-keys.md)).
+- **Placeholders** carry ⏳ in their title until the Worker reads them, and replies never promise a time.
+- **The pointer** to the Library, with a recall hint, lives in the account-wide Instructions instead of chat memory ([ADR-0002](adr/0002-settings-live-in-the-library.md)).
 
 ## Parts
 
@@ -94,3 +104,8 @@ Setup is a conversation on the computer, in the Code tab, after the plugin is ad
 - [ ] Claude's Sheets connector can append rows to an existing sheet.
 - [ ] The Instagram export parser handles a real export, including collections with no save date.
 - [x] Anonymous yt-dlp works for public reels from a home connection. (2026-10-24, yt-dlp 2026.10.21, metadata only, no cookies: an Instagram reel gave its author, its full caption and 8 formats. A TikTok short link gave its author, its caption and 10 formats.)
+- [ ] The skill's `model: sonnet` applies in a scheduled run. Check the model of one real run after 0.4.0.
+- [ ] A push from a scheduled run reaches the phone when the user is away from the computer. (2026-11-11: the push tool skipped it because the user was active in the Claude app.)
+- [ ] The user can answer a scheduled run's chat from the phone, through Remote Control.
+- [x] Which fields a page shared from Instagram through Notion's share sheet fills, and where its link sits. (2026-11-11, Pixel, into the test Library: the Link field holds the reel's link with a `psln` query, the title is what the user typed, the body is an embed of the link, and Status is empty.)
+- [x] A scheduled run can read the plan's usage. (2026-11-11: it could, with Claude Desktop's `get_usage`.)

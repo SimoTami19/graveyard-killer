@@ -11,7 +11,8 @@
         "Its Link is https://www.instagram.com/p/<code>/ with no query string",
         "Its Platform is Instagram and its Status is the Library's label for Inbox",
         "Its Category is the fallback Category and its Note, in the Settings language, says only the link was saved",
-        "The reply is at most two lines, says only the link was saved and links to the Entry"
+        "The reply is at most two lines, says only the link was saved, names no day or time for the Worker, and links to the Entry",
+        "Its Title starts with '⏳ '"
       ]
     },
     {
@@ -22,7 +23,8 @@
       "expectations": [
         "Exactly one new Entry exists in the test Library",
         "Its Link is https://www.instagram.com/p/<code>/ with no query string",
-        "Its Status is the Library's label for Inbox and its Category is one of the Settings Categories"
+        "Its Status is the Library's label for Inbox and its Category is one of the Settings Categories",
+        "Its Title starts with '⏳ '"
       ]
     },
     {
@@ -34,7 +36,8 @@
         "Exactly one new Entry exists in the test Library",
         "Its Link is https://www.tiktok.com/@scout2015/video/6718335390845095173",
         "Its Platform is TikTok, its Status is the Library's label for Inbox and its Category is one of the Settings Categories",
-        "If no caption could be read, the Note says only the link was saved and the reply says so"
+        "If no caption could be read, the Note says only the link was saved and the reply says so",
+        "Its Title starts with '⏳ '"
       ]
     },
     {
@@ -45,7 +48,8 @@
       "expectations": [
         "Exactly one new Entry exists in the test Library",
         "Its Platform is TikTok and its Status is the Library's label for Inbox",
-        "Its Link is the full /@user/video/<id> link if a fetched page showed it, else the short link"
+        "Its Link is the full /@user/video/<id> link if a fetched page showed it, else the short link",
+        "Its Title starts with '⏳ '"
       ]
     },
     {
@@ -57,7 +61,8 @@
         "Exactly one new Entry exists in the test Library",
         "Its Link is https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         "Its Platform is YouTube, its Status is the Library's label for Inbox and its Category is one of the Settings Categories",
-        "Its Author is Rick Astley"
+        "Its Author is Rick Astley",
+        "Its Title starts with '⏳ '"
       ]
     },
     {
@@ -81,7 +86,8 @@
         "Its Link is https://en.wikipedia.org/wiki/Carbonara",
         "Its Platform is Other and its Status is the Library's label for Inbox",
         "Its Title and Summary are about carbonara, so the page's title counted as a preview",
-        "Its Note is empty"
+        "Its Note is empty",
+        "Its Title starts with '⏳ '"
       ]
     },
     {

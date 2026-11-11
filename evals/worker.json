@@ -1,5 +1,5 @@
 {
-  "skill_name": "graveyard-killer",
+  "skill_name": "graveyard-killer-worker",
   "evals": [
     {
       "id": 1,
@@ -10,7 +10,7 @@
         "The reel Entry's Status is the Library's label for Processed and its Note is empty",
         "Its Author is the account handle and its Caption holds the post's full caption",
         "Its page body has a Transcript section, and an On-screen text section if the video shows text",
-        "Its Title is no longer the link or Capture's '<Platform> post' title",
+        "Its Title has no ⏳ and is no longer the link or Capture's '⏳ <Platform> post' title",
         "Its Category is a non-fallback Category when one fits the post",
         "It has no cover, since Instagram has no stable image link",
         "The reply is in the Settings language and counts it as Processed"
@@ -33,7 +33,7 @@
       "expected_output": "Seed: the YouTube Entry Capture already previewed. The Worker keeps its Title and adds the description and a transcript.",
       "files": [],
       "expectations": [
-        "The YouTube Entry keeps the Title Capture wrote",
+        "The YouTube Entry keeps the Title Capture wrote, without its ⏳",
         "Its Caption holds the video's description",
         "Its page body has a Transcript section",
         "Its Status is the Library's label for Processed",
@@ -48,7 +48,7 @@
       "expectations": [
         "The older Entry's page body gains a 'Captured again on <date>' line with the newer Entry's Captured date",
         "The newer Entry's Note says it duplicates the older Entry",
-        "The closing reply lists the duplicate and asks once whether to move it to the trash",
+        "The Ping at the end lists the duplicate and asks once whether to move it to the trash",
         "After a yes, the newer Entry is in the Notion trash"
       ]
     },
@@ -66,11 +66,11 @@
     {
       "id": 6,
       "prompt": "run the Graveyard Killer worker",
-      "expected_output": "Seed: no Entry has Status Inbox. The Worker reports that there is nothing to do.",
+      "expected_output": "Seed: no Entry has Status Inbox or no Status, and none is Buried. The Worker reports that there is nothing to do.",
       "files": [],
       "expectations": [
         "No Entry is created, changed or moved to the trash",
-        "The reply says there is nothing to process"
+        "The run ends with one line saying there was nothing to read, and sends no alert"
       ]
     },
     {
@@ -109,8 +109,34 @@
       "expected_output": "Ambiguous: the request does not name Graveyard Killer, so the skill does not run and no Entry changes.",
       "files": [],
       "expectations": [
-        "The graveyard-killer skill does not start a Worker run",
+        "Neither Graveyard Killer skill starts a Worker run",
         "No Entry is created, changed or moved to the trash"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "run the Graveyard Killer worker",
+      "expected_output": "Seed: a row added to Entries through Notion's share sheet: a public Instagram reel's link in its title, no Status, no Link. The Worker adopts it and finishes it.",
+      "files": [],
+      "expectations": [
+        "The row's Link holds the reel's canonical link and its Platform is Instagram",
+        "Its Captured date is the day the row was created",
+        "Its Status is the Library's label for Processed and its Title has no ⏳",
+        "If the shared title was more than the link, the page body starts with a 'Shared as' line holding it"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "run the Graveyard Killer worker. This is a scheduled run: nobody watches it while it works. Ask nothing until the Ping at the end, as the worker skill says. Then answer the user's replies in this chat.",
+      "expected_output": "Seed: an Inbox Entry for a public recipe post, an empty Preferences table, and 'Ping by' set to none. The run finishes the Entry and ends with a Ping that offers one Proposal and asks the Preference question.",
+      "files": [],
+      "expectations": [
+        "The recipe Entry is Processed",
+        "The run asks nothing before its final message",
+        "The final message offers a numbered Proposal for the recipe, such as a grocery list, with a link to the Entry",
+        "It asks once whether to make that kind of offer always, each time, or never",
+        "'Last Ping' in the Settings is today",
+        "After the reply 'yes, always', the grocery list is in the chat and the Preferences table has a row for the recipe Category and that action, answered 'always' in the Settings language"
       ]
     }
   ]

@@ -27,22 +27,21 @@ The user asks Graveyard Killer to import their Graveyard. The import runs on the
 5. **Tell the user what will be imported:** the count per platform and per Category. Ask once to go ahead. Done when they answer.
 
 6. **Create the Buried Entries**, in batches, with:
-   - **Title:** "<Platform> post", or "<Platform> post by <author>", in the Settings language;
+   - **Title:** "⏳ <Platform> post", or "⏳ <Platform> post by <author>", in the Settings language;
    - **Link, Platform, Author, Category:** from the post;
    - **Saved:** the post's `saved` date;
    - **Status:** the Library's label for Buried.
 
    Leave Captured and Note empty. Done when every new post has an Entry.
 
-7. **Record the import.** Set "Last import" in the Settings' Graveyard section to today. Tell the user how many Entries were buried, and that each weekly run digs up the number in "Dig up per run". Done when you have sent it.
+7. **Record the import.** Set "Last import" in the Settings' Graveyard section to today. Tell the user how many Entries were buried, and that each tidy-up brings back a few, within the daily and weekly limits in the Settings. Done when you have sent it.
 
 ## Dig up (part of each Worker run)
 
-After the Inbox, the Worker run digs up Buried Entries:
+After the Inbox, the Worker run digs up Buried Entries with what is left of its budget ([worker.md](worker.md#steps), step 2):
 
-1. **Pick them.** Query the Entries whose Status is the Library's label for Buried. If "Dig up next" names a Category, take that Category's Entries first. Order them by Saved, newest first, with empty dates last. Take as many as "Dig up per run" says (10 if empty). Done when you hold the list.
-2. **Finish each one exactly like an Inbox Entry** (see [worker.md](worker.md#each-entry)). A dug-up Entry ends Processed, Unavailable or merged, or stays Buried with a Note when it could not be read. The pause before Instagram Entries and the stop at an Instagram challenge cover dug-up Entries too.
-3. **Note them for the Digest:** which Entries this run dug up. Done when the list is ready for the Digest.
+1. **Pick them.** Query the Entries whose Status is the Library's label for Buried. If "Dig up next" names a Category, take that Category's Entries first. Order them by Saved, newest first, with empty dates last, and put the Entries with a Note, which a past run could not read, after all the others. Take as many as the budget leaves. Done when you hold the list.
+2. **Finish each one exactly like an Inbox Entry** (see [worker.md](worker.md#each-entry)). A dug-up Entry ends Processed, Unavailable or merged, or stays Buried with its ⏳ and a Note when it could not be read. The pause before Instagram Entries and the stop at an Instagram challenge cover dug-up Entries too. Done when each one has its result.
 
 When the user asks to dig up a Category next ("dig up my recipes next"), set "Dig up next" to that Category. When that Category has no Buried Entries left, clear it.
 

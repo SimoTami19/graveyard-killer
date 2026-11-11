@@ -15,7 +15,7 @@ Instagram's own bookmark button, which puts a post in the Saved collection insid
 _Avoid_: Save (alone)
 
 **Inbox**:
-The Captures that are not yet processed.
+The Captures the Worker has not read yet. No agent has watched their posts, so the user sees them as placeholders.
 _Avoid_: Queue, pending
 
 **Worker**:
@@ -31,7 +31,7 @@ An Entry imported from the Graveyard that holds only its link, date saved and au
 _Avoid_: Imported, pending, backlog item
 
 **Dig up**:
-To turn a Buried Entry into a full Entry. Each Worker run digs up a few.
+To turn a Buried Entry into a full Entry. Each Worker run digs up a few, within its download limits.
 _Avoid_: Exhume, process, restore
 
 **Amnesty**:
@@ -72,15 +72,27 @@ An Entry whose post was deleted or made private before the Worker could download
 _Avoid_: Failed, broken, dead
 
 **Settings**:
-The part of the Library that holds the user's Categories, field names, language and schedule. Every agent reads it from there.
-_Avoid_: Config, memory, preferences
+The part of the Library that holds the user's Categories, field names, language, schedule, limits and Preferences. Every agent reads it from there.
+_Avoid_: Config, memory
 
 ### Using the Library
 
 **Digest**:
-A short review of recent Entries, written by the agent for the user.
-_Avoid_: Summary, report, newsletter
+A short review of recent Entries that the agent gives the user in a chat: when the user asks, or in a Ping when a week has passed with no other Ping.
+_Avoid_: Summary, report, newsletter, recap page
+
+**Ping**:
+A message a Worker run sends the user on its own, because it has a Proposal to make or something only the user can fix. The user answers it in that same chat.
+_Avoid_: Notification, alert, push
 
 **Proposal**:
-An action the agent offers while it shows a Digest. Nothing happens unless the user accepts it.
-_Avoid_: Suggestion, push, automation
+An action the agent offers for an Entry, such as a grocery list for a saved recipe or a calendar event for a dated one. Nothing happens without the user's yes.
+_Avoid_: Suggestion, automation
+
+**Preference**:
+The user's standing answer to one kind of Proposal, such as "always offer a grocery list for recipes" or "never ping me about AI tools". The agent asks for it the first time that kind of Proposal comes up.
+_Avoid_: Rule, setting, habit
+
+**Recall**:
+An agent looking in the Library for what the user saved: when the user asks about it, or when a conversation touches something the Library holds.
+_Avoid_: Search, memory

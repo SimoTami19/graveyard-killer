@@ -1,6 +1,6 @@
 # Evals
 
-Evals for the `graveyard-killer` skill, in [skill-creator](https://github.com/anthropics/skills)'s `evals.json` format. They live outside `plugin/`, so they are not installed with the plugin.
+Evals for the `graveyard-killer` and `graveyard-killer-worker` skills, in [skill-creator](https://github.com/anthropics/skills)'s `evals.json` format. They live outside `plugin/`, so they are not installed with the plugin.
 
 ## Capture (`capture.json`)
 
@@ -37,5 +37,6 @@ The Worker downloads and transcribes, so the tools from `post.py check` must be 
 - Evals 1 to 3 can share one run: seed all three Entries, run once, then check each eval's expectations.
 - Eval 4 needs a processed TikTok Entry, so run it after eval 2.
 - Eval 8 (an article) stands alone. Eval 9 checks after any run.
+- Eval 11 needs a row shared from the phone through Notion's share sheet. Eval 12 needs "Ping by" set to `none` in the test Library's Settings.
 
 The post script itself is tested in `tests/test_post.py` with fake tools and no network, and in `tests/test_post_live.py` against the real tools (`uv run pytest -m live`).

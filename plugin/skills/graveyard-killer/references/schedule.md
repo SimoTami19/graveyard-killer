@@ -1,24 +1,24 @@
 # Schedule the Worker
 
-The weekly Worker is a scheduled task in the Claude Desktop Code tab. It runs on the day and at the time in the Settings, while the app is open and the computer is awake. If the computer is asleep or the app is closed at that time, the task runs at the next launch. Each run starts fresh, so its prompt carries everything it needs.
+The Worker is a scheduled task in the Claude Desktop Code tab. It runs every day at the time in the Settings, while the app is open and the computer is awake. If the computer is asleep or the app is closed at that time, the task runs at the next launch. Each run starts fresh, so its prompt carries everything it needs.
 
-You have chosen this job, found the Library and read its Settings (see SKILL.md). You need your scheduling tool, the one that creates scheduled tasks in the Code tab. Without it, tell the user that the weekly Worker is set up from the Claude Desktop Code tab, and stop.
+You have chosen this job, found the Library and read its Settings (see SKILL.md). You need your scheduling tool, the one that creates scheduled tasks in the Code tab. Without it, tell the user that the Worker is scheduled from the Claude Desktop Code tab, and stop.
 
 ## Steps
 
-1. **Read the schedule** from the Settings' Schedule section: a weekday and a time, such as `Domenica 10:00`. Done when you hold both. With no time given, use 10:00.
+1. **Read the schedule** from the Settings' Schedule section: a time, every day unless it names weekdays, such as `Ogni giorno 13:00`. Done when you hold it. With no time given, use 13:00.
 
 2. **Create or update the task.** List the scheduled tasks first, and read the prompt of any task named `graveyard-killer-worker`.
-   - If its prompt names this Library, update its schedule and prompt.
+   - If its prompt names this Library, update its title, description, schedule and prompt. This also brings a task made by an older version up to date.
    - If it names another Library, it runs that Library's Worker. Ask the user whether to replace it or add a second task. A second task gets the taskId `graveyard-killer-worker-2`, or the next free number.
    - If there is none, create it.
 
    Use these values:
    - **taskId:** `graveyard-killer-worker`
-   - **title:** "Graveyard Killer: weekly tidy-up", in the Settings language
-   - **description:** "Finishes the new cards, brings back a few old saves and writes the weekly recap", in the Settings language
-   - **notifications:** off, since the Digest tells the user what happened
-   - **schedule:** a weekly cron expression in local time, such as `0 10 * * 0` for Sunday at 10:00 (0 is Sunday, 1 is Monday)
+   - **title:** "Graveyard Killer: tidy-up", in the Settings language ("Graveyard Killer: riordino")
+   - **description:** "Reads the new posts, brings back a few old saves and pings you when something needs you", in the Settings language
+   - **notifications:** off, since the Ping alerts the user
+   - **schedule:** a cron expression in local time, such as `0 13 * * *` for every day at 13:00
    - **prompt:** exactly this, with the Library link filled in:
 
      ```
@@ -26,9 +26,13 @@ You have chosen this job, found the Library and read its Settings (see SKILL.md)
 
      Graveyard Killer Library: <the Library link>
 
-     This is an unattended scheduled run: nobody can answer a question. Ask nothing. Where the skill says to ask, do what it says for an unattended run.
+     This is a scheduled run: nobody watches it while it works. Ask nothing until the Ping at the end, as the worker skill says. Then answer the user's replies in this chat.
      ```
 
    Done when the tool confirms the task and its next run time.
 
-3. **Tell the user**, in the Settings language: the day and time of the runs, and that a run only happens while the Claude app is open and the computer is awake. A missed run catches up once at the next launch. If the session is not in Auto mode, the first run may stop for tool approvals. In that case the user should open the run and choose "always allow" for each tool, so that later runs never stop. Done when you have sent it.
+3. **Set the model and the approvals.** Your scheduling tool cannot set a task's model, so walk the user through it. Done when the user says both are done.
+   - In the Code tab's list of scheduled tasks, they open the Graveyard Killer task, edit it, and pick Sonnet as its model. The Worker asks for Sonnet itself, and this setting makes sure, so that a run never spends Opus or Fable usage.
+   - They select *Run now* once and choose "always allow" for each tool the run asks for, so that later runs never stop for an approval.
+
+4. **Tell the user**, in the Settings language: the time of the runs, that a run only happens while the Claude app is open and the computer is awake, and that a missed run catches up once at the next launch. Done when you have sent it.

@@ -1,6 +1,6 @@
 # No server and no API keys: the user's computer downloads, the user's agent thinks
 
-Graveyard Killer is for people who will not manage API keys or a server. So it has neither. The user's own agent, on their subscription, does all analysis, and it reads and writes the Library only through that agent's connectors. Downloads happen on the user's own computer, in a weekly Worker run. Only that machine has the user's Instagram login and a home connection that Instagram does not throttle.
+Graveyard Killer is for people who will not manage API keys or a server. So it has neither. The user's own agent, on their subscription, does all analysis, and it reads and writes the Library only through that agent's connectors. Downloads happen on the user's own computer, in a Worker run, daily by default. Only that machine has the user's Instagram login and a home connection that Instagram does not throttle.
 
 ## Considered Options
 
@@ -11,8 +11,9 @@ Graveyard Killer is for people who will not manage API keys or a server. So it h
 
 ## Consequences
 
-- An Entry captured on the phone stays a preview until the Worker's next weekly run. An Instagram Entry holds only its link until then. This makes Stories (gone in 24 hours) impossible in v1.
+- An Entry captured on the phone stays a preview until the Worker's next run. An Instagram Entry holds only its link until then, and its title starts with ⏳ so the user sees it is a placeholder. This makes Stories (gone in 24 hours) impossible in v1.
 - Phone-only users never get transcripts.
 - The Worker runs only while the Claude Desktop app is open and the computer is awake. A missed run catches up once.
-- Downloading with the user's login puts their real Instagram account at risk. Instagram has flagged sessions for "suspected scraping" after a few dozen downloads, and no safe rate is known. So the Worker tries every Instagram post without the login first. It uses the login only as a fallback, for a few posts per run with long random pauses. At the first challenge it stops reading Instagram for the rest of the run, while TikTok and YouTube posts carry on, since the risk is Instagram's. It digs up only 10 Buried Entries per run by default. Setup states this risk to the user.
+- Downloading with the user's login puts their real Instagram account at risk. Instagram has flagged sessions for "suspected scraping" after a few dozen downloads, and no safe rate is known. So the Worker tries every Instagram post without the login first. It uses the login only as a fallback, for a few posts per run with long random pauses. At the first challenge it stops reading Instagram for the rest of the run, while TikTok and YouTube posts carry on, since the risk is Instagram's. Reading is capped at 20 posts a day and 100 a week by default, shared by new saves and Dig up, with a 6 to 12 second pause between Instagram posts. Instagram publishes no limit; these follow the download tools' own pacing: gallery-dl waits 6 to 12 seconds between Instagram requests, and Instaloader allows itself 75 to 200 requests per 11 minutes (checked 2026-11-11). Setup states this risk to the user.
 - Meta Muse (Oct 2026) does not remove the download: it is chat-only, unavailable in the EU, and its terms forbid automating it. Its model's API needs the video file.
+- Every run spends the user's plan usage. So the Worker runs on Sonnet, never on an Opus or Fable model, and a run that can read the plan's usage skips Dig up above 70% of the weekly limit and reads nothing above 90%.

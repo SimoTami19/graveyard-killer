@@ -1,6 +1,6 @@
 ---
 name: graveyard-killer
-description: Capture a shared post into the user's Graveyard Killer Library. Use whenever a message is a link (Instagram, TikTok, YouTube or any web page) with no request, such as a bare link, a link inside an app's share text, or a link with a short "save this". Also use whenever the user names Graveyard Killer, for example to set it up, run its Worker, import old saves or show its Digest.
+description: Capture a shared post into the user's Graveyard Killer Library, and recall what the user saved there. Use whenever a message is a link (Instagram, TikTok, YouTube or any web page) with no request, such as a bare link, a link inside an app's share text, or a link with a short "save this"; whenever the user asks about a post they saved; and whenever the user names Graveyard Killer, for example to set it up, import old saves or get its Digest.
 ---
 
 # Graveyard Killer
@@ -14,9 +14,11 @@ With the user, use plain words in their language instead of this skill's terms, 
 | This skill says | Say | In Italian |
 | --- | --- | --- |
 | Library | your Library | la tua Libreria |
-| Worker run | the weekly tidy-up | il riordino settimanale |
-| Digest | the weekly recap | il riepilogo settimanale |
 | Entry | card | scheda |
+| Inbox Entry | a placeholder | un segnaposto |
+| Worker run | the tidy-up | il riordino |
+| Digest | the recap | il riepilogo |
+| Proposal | an offer | una proposta |
 | Graveyard | old saves | vecchi salvataggi |
 | dig up | bring back | ripescare |
 | Amnesty | set aside old saves | scartare i vecchi salvataggi |
@@ -25,25 +27,25 @@ With the user, use plain words in their language instead of this skill's terms, 
 
 A **Capture** is the user sending you one post's URL to keep it. It arrives as a link on its own, a link inside an app's share text ("Check out this reel!"), or a link with a short "save this". The user is usually on their phone and wants to send the next post in seconds. So finish a Capture in one turn and ask nothing.
 
-A **Worker run** is the user asking Graveyard Killer to finish its Inbox, for example "run the Graveyard Killer worker". The request names Graveyard Killer. An inbox request without that name is about something else, such as email, so answer it as usual. It downloads and reads each post on the user's computer, so it needs a shell with the user's own tools. If you have no shell, as in a phone app, tell the user the Worker runs on their computer, in the Claude Desktop Code tab, and stop.
-
-A link that comes with a question or a task ("summarise this", "is this true?") is a request, and a message with no link is ordinary chat. Answer those as usual, without this skill.
+A link that comes with a question or a task ("summarise this", "is this true?") is a request, and a message with no link is ordinary chat. Answer those as usual, without this skill, unless they ask about the user's saves.
 
 Done when you know the job:
 
 - **Capture**: follow the steps below, then [references/capture.md](references/capture.md).
-- **Worker run**: follow the steps below, then [references/worker.md](references/worker.md).
-- **Schedule the Worker**: the user asks Graveyard Killer to run its Worker every week, or to change the day or time, for example "schedule the Graveyard Killer worker". Follow the steps below, then [references/schedule.md](references/schedule.md).
-- **Setup**: the user asks to set up Graveyard Killer, or has no Library yet. Go straight to [references/setup.md](references/setup.md), which creates the Library.
+- **Recall**: the user asks about something they saved ("that carbonara recipe I saved?", "what did I save this week?"). Follow the steps below, then [references/recall.md](references/recall.md).
+- **Worker run**: the user asks to run the Graveyard Killer worker or its tidy-up. Use the `graveyard-killer-worker` skill, which runs it on the model it needs. If you have no shell, as in a phone app, tell the user the Worker runs on their computer, in the Claude Desktop Code tab, and stop.
+- **Schedule the Worker**: the user asks Graveyard Killer to run its Worker on a schedule, or to change its time, for example "schedule the Graveyard Killer worker". Follow the steps below, then [references/schedule.md](references/schedule.md).
+- **Setup**: the user asks to set up Graveyard Killer, or has no Library yet. On a phone, tell them Setup runs on their computer, in the Claude Desktop Code tab, and stop. Otherwise go straight to [references/setup.md](references/setup.md), which creates the Library.
 - **Graveyard**: the user asks Graveyard Killer to import their old saves, to dig up a Category next, or for an Amnesty. Follow the steps below, then [references/graveyard.md](references/graveyard.md).
 - **Digest**: the user asks for their Graveyard Killer Digest, or what is new in their Library. Follow the steps below, then [references/digest.md](references/digest.md).
+- **Preference**: the user tells Graveyard Killer to always, never, or ask before making a kind of offer, such as "stop offering grocery lists". Follow the steps below, then [references/ping.md](references/ping.md#when-the-user-answers).
 
 ## 2. Find the Library
 
-Look in your memory for the Library's location, saved as one line: `Graveyard Killer Library: <link>`. Done when you hold the Library link.
+Look in your instructions and memory for the Library's location, one line: `Graveyard Killer Library: <link>`. Done when you hold the Library link.
 
 - If the line is missing, ask the user once for the link to their Graveyard Killer Library page in Notion. If they have no Library yet: on a computer, offer Setup ([references/setup.md](references/setup.md)); on a phone, tell them Setup runs on their computer, in the Claude Desktop Code tab, and stop.
-- With the link in hand, save that line to your memory if you can. If you cannot, give the user the exact line and ask them to add it to your memory or custom instructions.
+- When you had to ask for the link, give the user the pointer text from [setup.md](references/setup.md#the-pointer) once, ready to paste into the Instructions in their Claude settings, so that you need not ask again.
 
 ## 3. Read the Settings
 

@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Shipped. The spec Capture was built from, kept as a record; the skill files and the ADRs describe current behaviour.
 
 # Spec: Capture a post from the phone into a Notion Library
 

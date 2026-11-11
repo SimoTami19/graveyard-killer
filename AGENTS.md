@@ -4,7 +4,7 @@
 
 ### Issue tracker
 
-Issues and specs are local markdown files under `.scratch/`, committed to git. See `docs/agents/issue-tracker.md`.
+Issues and specs are GitHub Issues on this repo, worked with the `gh` CLI. See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 

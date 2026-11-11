@@ -1,6 +1,6 @@
 ---
 name: graveyard-killer
-description: Capture a shared post into the user's Graveyard Killer Library, and recall what the user saved there. Use whenever a message is a link (Instagram, TikTok, YouTube or any web page) with no request, such as a bare link, a link inside an app's share text, or a link with a short "save this"; whenever the user asks about a post they saved; and whenever the user names Graveyard Killer, for example to set it up, import old saves or get its Digest.
+description: Capture a shared post into the user's Graveyard Killer Library, and recall what the user saved there. Use whenever a message is a link (Instagram, TikTok, YouTube or any web page) with no request, such as a bare link, a link inside an app's share text, or a link with a short "save this"; whenever the user asks about a post they saved; and whenever the user names Graveyard Killer or answers one of its messages, for example to set it up, import old saves, get its Digest or reply to its offers.
 ---
 
 # Graveyard Killer
@@ -33,7 +33,8 @@ Done when you know the job:
 
 - **Capture**: follow the steps below, then [references/capture.md](references/capture.md).
 - **Recall**: the user asks about something they saved ("that carbonara recipe I saved?", "what did I save this week?"). Follow the steps below, then [references/recall.md](references/recall.md).
-- **Worker run**: the user asks to run the Graveyard Killer worker or its tidy-up. Use the `graveyard-killer-worker` skill, which runs it on the model it needs. If you have no shell, as in a phone app, tell the user the Worker runs on their computer, in the Claude Desktop Code tab, and stop.
+- **Worker run**: the user asks to run the Graveyard Killer worker or its tidy-up. Use the `graveyard-killer-worker` skill and pass it the user's whole message: it runs on its own, on the model it needs. When it returns, give its final message to the user as it is. If you have no shell, as in a phone app, tell the user the Worker runs on their computer, in the Claude Desktop Code tab, and stop.
+- **Ping answer**: the user answers a Graveyard Killer Ping in the chat where it arrived, such as "yes to 1", "always for recipes" or "trash the duplicate". Follow the steps below, then [references/ping.md](references/ping.md#when-the-user-answers).
 - **Schedule the Worker**: the user asks Graveyard Killer to run its Worker on a schedule, or to change its time, for example "schedule the Graveyard Killer worker". Follow the steps below, then [references/schedule.md](references/schedule.md).
 - **Setup**: the user asks to set up Graveyard Killer, or has no Library yet. On a phone, tell them Setup runs on their computer, in the Claude Desktop Code tab, and stop. Otherwise go straight to [references/setup.md](references/setup.md), which creates the Library.
 - **Graveyard**: the user asks Graveyard Killer to import their old saves, to dig up a Category next, or for an Amnesty. Follow the steps below, then [references/graveyard.md](references/graveyard.md).

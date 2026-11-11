@@ -78,6 +78,16 @@ def check() -> dict[str, Any]:
     return {"ok": not missing, "missing": missing, "speech_model": speech_model(engines()[0])}
 
 
+def run(command: list[str], **options: Any) -> subprocess.CompletedProcess[Any]:
+    """subprocess.run, with the program looked up on PATH first.
+
+    On Windows a bare program name finds only an .exe, while shutil.which also finds
+    the .cmd and .bat files that some installs, and the tests' fake tools, use.
+    A program that is not found keeps its bare name, so it raises FileNotFoundError.
+    """
+    return subprocess.run([shutil.which(command[0]) or command[0], *command[1:]], **options)
+
+
 def clean(folder: Path) -> dict[str, Any]:
     """Delete a work folder, but only one that read made: it holds the marker file."""
     if not (folder / MARKER).is_file():
@@ -162,7 +172,7 @@ def read_post(link: str, folder: Path, language: str | None) -> dict[str, Any]:
     downloaded = download(link, folder)
     if downloaded.returncode != 0 and "http error 403" in last_error(downloaded.stderr).lower():
         # Sites often break older yt-dlp releases: update once, then retry once.
-        subprocess.run(["uv", "tool", "upgrade", "yt-dlp"], capture_output=True)
+        run(["uv", "tool", "upgrade", "yt-dlp"], capture_output=True)
         downloaded = download(link, folder)
     if downloaded.returncode != 0:
         if matches(last_error(downloaded.stderr), NO_VIDEO):
@@ -204,7 +214,7 @@ def read_photos(link: str, folder: Path) -> dict[str, Any]:
     on a real 7-slide Instagram carousel, 2026-10-25.
     """
     images_dir = folder / "images"
-    asked = subprocess.run(
+    asked = run(
         # --no-simulate: without it, --dump-single-json writes no files at all.
         ["yt-dlp", *ANONYMOUS, "--ignore-no-formats-error", "--skip-download", "--no-simulate",
          "--dump-single-json", "--no-warnings", "--write-thumbnail", "--convert-thumbnails", "jpg",
@@ -219,7 +229,7 @@ def read_photos(link: str, folder: Path) -> dict[str, Any]:
         canonical = parse_link(info.get("webpage_url") or link)
         return photos(canonical, folder, images, author_of(info, canonical["platform"]),
                       info.get("description") or "")
-    fetched = subprocess.run(
+    fetched = run(
         ["gallery-dl", "--config-ignore", "--write-metadata", "-D", str(images_dir), "--", link],
         capture_output=True, text=True,
     )
@@ -348,7 +358,7 @@ def caption_track(info: dict[str, Any]) -> tuple[str, str] | None:
 
 def captions(link: str, track: str, source: str, folder: Path) -> str:
     which = "--write-subs" if source == "captions" else "--write-auto-subs"
-    subprocess.run(
+    run(
         ["yt-dlp", *ANONYMOUS, "--skip-download", which, "--sub-langs", track, "--sub-format", "vtt",
          "--no-warnings", "-o", str(folder / "subs.%(ext)s"), "--", link],
         capture_output=True, text=True, check=True,
@@ -371,7 +381,7 @@ def vtt_text(vtt: str) -> str:
 
 
 def download(link: str, folder: Path) -> subprocess.CompletedProcess[str]:
-    return subprocess.run(
+    return run(
         ["yt-dlp", *ANONYMOUS, "--no-simulate", "--dump-single-json", "--no-warnings", "--no-progress",
          "-f", AT_MOST_720P, "--write-thumbnail", "--convert-thumbnails", "jpg", "--playlist-items", "1",
          "-o", str(folder / "media.%(ext)s"), "--", link],
@@ -454,7 +464,7 @@ def evenly(items: list[T], most: int) -> list[T]:
 
 
 def scene_changes(media: Path) -> list[float]:
-    scan = subprocess.run(
+    scan = run(
         ["ffmpeg", "-hide_banner", "-nostats", "-i", str(media), "-an",
          "-vf", f"scale=160:-2,select='gt(scene,{SCENE_THRESHOLD})',showinfo", "-f", "null", "-"],
         capture_output=True, text=True, check=True,
@@ -463,7 +473,7 @@ def scene_changes(media: Path) -> list[float]:
 
 
 def duration_of(media: Path) -> float:
-    probe = subprocess.run(
+    probe = run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(media)],
         capture_output=True, text=True, check=True,
     )
@@ -472,11 +482,12 @@ def duration_of(media: Path) -> float:
 
 def tiny(image: Path) -> bytes:
     """A 16x16 RGB thumbnail, for spotting near-duplicate frames."""
-    return subprocess.run(
+    pixels: bytes = run(
         ["ffmpeg", "-v", "error", "-i", str(image), "-vf", "scale=16:16", "-f", "rawvideo",
          "-pix_fmt", "rgb24", "-"],
         capture_output=True, check=True,
     ).stdout
+    return pixels
 
 
 def difference(a: bytes, b: bytes) -> float:
@@ -492,11 +503,11 @@ def save_jpeg(source: Path, out: Path, box: int, quality: int = 3, at: float | N
 
 
 def run_ffmpeg(*args: str) -> None:
-    subprocess.run(["ffmpeg", "-v", "error", "-y", *args], capture_output=True, check=True)
+    run(["ffmpeg", "-v", "error", "-y", *args], capture_output=True, check=True)
 
 
 def has_audio(media: Path) -> bool:
-    probe = subprocess.run(
+    probe = run(
         ["ffprobe", "-v", "error", "-select_streams", "a", "-show_entries", "stream=index",
          "-of", "csv=p=0", str(media)],
         capture_output=True, text=True, check=True,
@@ -511,7 +522,7 @@ def transcribe(media: Path, out_dir: Path, language: str | None) -> tuple[str, s
     command = [engine.program, str(media), *engine.options, str(out_dir)]
     if language and engine.name == "whisper":  # Parakeet takes no language option
         command += ["--language", language]
-    subprocess.run(command, capture_output=True, text=True, check=True)
+    run(command, capture_output=True, text=True, check=True)
     result = json.loads((out_dir / f"{media.stem}.json").read_text())
     return str(result.get("text", "")).strip(), result.get("language") or language, engine.name
 

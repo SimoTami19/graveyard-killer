@@ -2,9 +2,9 @@
 
 The Worker reads the Entries that wait for it: the Inbox, then a few Buried Entries. It reads each post on the user's own computer, with no login, so the user's accounts stay safe and nothing goes through a server. You do the judging and the Notion writes. The post script does everything that touches media. At the end the run sends a **Ping** when something needs the user, and answers the user in this chat.
 
-You came here from the `graveyard-killer-worker` skill, found the Library and read its Settings. Run the scripts with `python3` from the `graveyard-killer` skill's folder, where this file is.
+You came here from the `graveyard-killer-worker` skill, or from Setup or Recall for one Entry, and you found the Library and read its Settings. Run the scripts with `python3` from the `graveyard-killer` skill's folder, where this file is.
 
-**Scheduled runs.** When the request says it is a scheduled run, nobody watches it while it works. Ask nothing until step 7: every question goes into the Ping. A prompt from before version 0.4.0 calls the run "unattended" and says to ask nothing at all. Treat it the same way, and add a fix to the Ping asking the user to update the schedule ([ping.md](ping.md#gather-it)).
+**Scheduled runs.** The `graveyard-killer-worker` skill always runs this way, whatever the request says: nobody watches the run while it works. Ask nothing: every question goes into the Ping, and the user answers it later in the chat that started the run. A prompt from before version 0.4.0 calls the run "unattended" and says to ask nothing at all. Treat it the same way, and add a fix to the Ping asking the user to update the schedule ([ping.md](ping.md#gather-it)).
 
 ## Steps
 

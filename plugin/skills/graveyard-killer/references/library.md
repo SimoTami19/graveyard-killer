@@ -162,6 +162,14 @@ Ogni giorno 13:00
 
 A new Library starts with the Limits above and every other new setting empty. A Library made before version 0.4.0 may lack a section, or still hold "Dig up per run", which the Limits replace. Use the defaults for a missing section, and add the section, in the order shown above, the first time you write to it.
 
+## Querying the Entries
+
+On Notion plans below Business, the connector's filtered and SQL queries share an allowance that resets within the hour. Reading one of the database's views does not count against it (checked 2026-11-11). So:
+
+- Ask each question once per job and work from the answer. Never query once per post in a loop.
+- To read many Entries, such as every Link for a Graveyard import, page through the Entries database's default view in view mode, and filter what you hold. Fetch the database for its view's link.
+- If Notion says the allowance is used up, read through the default view for the rest of the job, and tell the user once, in one line, that Notion's query limit was reached and resets within the hour.
+
 ## Finding an Entry by its link
 
 Query the Entries database for a row whose Link field equals the canonical link exactly. A link that only a redirect can resolve, such as a TikTok link from an export, may sit in the Library under its full form. When you know the post's id, also look for a Link that contains it.

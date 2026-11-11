@@ -20,7 +20,7 @@ The user asks Graveyard Killer to import their Graveyard. The import runs on the
 2. **Read them.** Run `python3 scripts/graveyard.py "<path>" ["<path>" …]` from this skill's folder. It prints `posts` (newest first), `collections` and `warnings`. Done when you hold the result.
    - Tell the user about every warning. An HTML export must be requested again in JSON.
 
-3. **Leave out what the Library already holds.** For each post, look for an Entry with the same Link, or with a Link that contains the post's `id` (see [library.md](library.md#finding-an-entry-by-its-link)). Done when you know the new posts.
+3. **Leave out what the Library already holds.** Read every Link in the Library once, through the default view ([library.md](library.md#querying-the-entries)). A post is already there when a Link equals its link or contains its `id`. Done when you know the new posts.
 
 4. **Match collections to Categories.** A post whose collection has the same name as a Category in the Settings, or an obvious match, gets that Category. Every other post gets the fallback Category. If some collections have no matching Category, list them and ask once whether to add them as Categories. On a yes, add them to the Settings' Categories table and to the Category property's options, as [library.md](library.md#writing-to-notion) explains for options. Done when every new post has a Category.
 

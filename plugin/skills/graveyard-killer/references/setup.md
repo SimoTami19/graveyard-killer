@@ -2,13 +2,13 @@
 
 Setup is a conversation on the user's computer, in the Claude Desktop Code tab, after the plugin is added. At the end the user has their own Library, the tools, the scheduled Worker, saving from the phone and a way to get Pings. The user is probably not technical, so do the work yourself. Explain each step in a line, and ask one thing at a time. Setup runs once, on whatever model the user picked; only the Worker is pinned to Sonnet.
 
-Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard Killer job finds no Library. It does not need an existing Library, so skip SKILL.md's steps 2 and 3.
+Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard Killer job finds no Library. It does not need an existing Library, so skip SKILL.md's steps 2 and 3. Talk in the language the user writes in. It becomes the Settings language: say so in your first question, so the user can pick another.
 
-**A user who already has a Library,** set up on another computer: ask for its link, read its Settings as SKILL.md's step 3 says, and do only steps 4, 6 and 7 here. Tell them to keep the scheduled Worker on one computer only, and to delete the task on the other one. Talk in the language the user writes in. It becomes the Settings language: say so in your first question, so the user can pick another.
+**A user who says they already have a Library,** set up on another computer: ask for its link, read its Settings as SKILL.md's step 3 says, and do only steps 4, 6 and 7 here. Tell them to keep the scheduled Worker on one computer only, and to delete the task on the other one.
 
 ## Steps
 
-1. **What do they save?** Ask what kinds of posts the user saves, such as recipes, places, workouts or AI prompts. If the user mentions an Instagram export already on the computer, run `python3 scripts/graveyard.py "<path>"` and offer its `collections` as Categories. Done when you have 2 to 8 Categories, each with a line on what goes in it, and maybe its own fields (a recipe's ingredients, a place's location). Add one fallback Category for everything else.
+1. **What do they save?** Ask what kinds of posts the user saves, such as recipes, places, workouts or AI prompts. If the user mentions an Instagram export already on the computer, run `python3 scripts/graveyard.py "<path>"` and offer its `collections` as Categories. Add one fallback Category for everything else, and confirm the list with the user in one question. Done when you have 2 to 8 Categories, each with a line on what goes in it, and maybe its own fields (a recipe's ingredients, a place's location).
 
 2. **Create the Library.** Check that your Notion connector works, for example by reading the user's Notion profile or searching. If it does not, ask the user to connect Notion first. Ask in one question what to call the Library, suggesting "Graveyard Killer" as a private page. Then create it exactly as [library.md](library.md) describes:
    - the private page with that name;
@@ -23,17 +23,17 @@ Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard 
 
 5. **Test one link end to end.** Ask the user for the link of a public post they saved. Capture it as [capture.md](capture.md) says. Then finish only that Entry, as worker.md's [Each Entry](worker.md#each-entry) says, with no dig-up and no Ping. Show them the finished Entry. Done when it is Processed.
 
-6. **Point this computer to the Library.** In the Code tab, the pointer goes in the user's Claude Code memory file, `~/.claude/CLAUDE.md`. Show the user [the pointer](#the-pointer). With their OK, add it at the end of that file. Done when it is saved.
+6. **Point this computer to the Library.** In the Code tab, the pointer goes in the user's Claude Code memory file, `~/.claude/CLAUDE.md`. Show the user [the pointer](#the-pointer). With their OK, add it at the end of that file. Done when it is saved, or the user said no.
 
-7. **Schedule the Worker,** as [schedule.md](schedule.md) says. Done when the daily task exists and the user has set its model.
+7. **Schedule the Worker,** as [schedule.md](schedule.md) says. Done when the daily task exists and the user has set its model, or the user said to do it later: then tell them to say "schedule the Graveyard Killer worker" when they are ready.
 
 8. **Set up the phone.** Walk the user through it, one step at a time. Done when a shared post arrived in Entries, or the user says they will do it later.
    - **The pointer.** The Claude apps on the phone and the computer share one set of Instructions, in *Settings → Your Claude → Instructions*, which apply to every chat. Give them [the pointer](#the-pointer) to paste there. You cannot write it yourself.
    - **Save through Notion.** This is the main way to save, with no tokens and with the computer off. In Instagram, TikTok or YouTube, the user taps Share, picks Notion, chooses the Library's Entries database as the destination, and saves. On an iPhone they first turn Notion on under the share sheet's More. Then check that a row with the link arrived in Entries. Notion says its share sheet supports only browsers and the photo roll; if the app is missing or says the app is not supported, use the next route.
    - **Save through Claude.** The second way: share the post to the Claude app's Chat with no text. It costs a short chat, and for TikTok, YouTube and web links it writes a first summary at once. From Instagram it gets only the link.
 
-9. **Pick how Pings arrive.** Explain that a run sends a Ping only when it has an offer for them or a problem only they can fix, and that they answer in that run's chat. Offer, and write the choice to "Ping by" in the Settings' Pings section. Then send a test Ping through it and ask whether it arrived. Done when the user confirms, or chose `none`.
-   - `push`: a notification from Claude Desktop. It also reaches the phone when Remote Control is on for new sessions in Claude Desktop's settings.
+9. **Pick how Pings arrive.** Explain that a run sends a Ping only when it has an offer for them or a problem only they can fix, and that they answer in that run's chat, in Claude Desktop on this computer: a scheduled run cannot be opened from the phone. Offer, and write the choice to "Ping by" in the Settings' Pings section. Then send a test Ping through it and ask whether it arrived. Done when the user confirms, or chose `none`.
+   - `push`: a notification on this computer, from Claude Desktop. It does not reach the phone, since scheduled runs are never connected to Remote Control.
    - `email`: an email to themselves, through their Gmail connector.
    - `notion`: a comment that mentions them on the Library page. Notion may not notify you about a mention you wrote through your own connector, so the test matters here.
    - `none`: no alert. They open the run's chat in the Claude app when they like.

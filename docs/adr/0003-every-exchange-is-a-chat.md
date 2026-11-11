@@ -14,7 +14,7 @@ OpenClaw, xAI's Grok Bot and Claude Duet work the same way: they wake on a sched
 ## Consequences
 
 - A scheduled run asks nothing while it works. At its end it waits in its chat for the user's replies.
-- The Ping needs a way to reach the user, chosen at Setup: a push notification, an email to themselves, or a Notion mention. On 2026-11-11 the push tool skipped its notification because the user was active in the Claude app. Whether a push reaches the phone when the user is away, and whether the phone can answer in a scheduled run's chat, is not tested yet.
+- The Ping needs a way to reach the user, chosen at Setup: a push notification, an email to themselves, or a Notion mention. Tested on 2026-11-11: scheduled runs are never connected to Remote Control, and the tool that would connect one refuses unattended sessions. So a push from a run reaches only the computer, the run's chat does not show on the phone, and the user can answer only on the computer. Whether to let any chat answer the last Ping is an open question ([#2](https://github.com/andreadorizza/graveyard-killer/issues/2)).
 - The Settings gain a Pings section (how to reach the user, Last Ping, Last Digest) and a Preferences table.
 - Each Proposal is offered once, in the Ping of the run that reads its Entry. A Digest offers only Proposals about the Library itself, such as tidying or the Graveyard. In any chat the user can still ask for any action.
 - A Proposal's result comes in the chat, or goes to another app on the user's yes.

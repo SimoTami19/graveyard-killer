@@ -73,10 +73,18 @@ def post(tmp_path: Path) -> Iterator[Callable[..., Run]]:
         target = bin_dir / name
         shutil.copy(FAKE, target)
         target.chmod(0o755)
+        if os.name == "nt":
+            # Windows runs only .exe, .cmd and .bat files from PATH. The shim runs the
+            # fake under its tool's name, which is how the fake knows what to play.
+            (bin_dir / f"{name}.cmd").write_text(f'@"{sys.executable}" "%~dp0{name}" %*\n')
     for real in ("ffmpeg", "ffprobe"):
         found = shutil.which(real)
         if found:
-            (bin_dir / real).symlink_to(found)
+            link = bin_dir / Path(found).name  # keeps .exe on Windows
+            try:
+                link.symlink_to(found)
+            except OSError:  # Windows makes symlinks only in Developer Mode or as an admin
+                shutil.copy(found, link)
     log = tmp_path / "calls.jsonl"
 
     def run(
@@ -87,7 +95,8 @@ def post(tmp_path: Path) -> Iterator[Callable[..., Run]]:
         env: dict[str, str] | None = None,
     ) -> Run:
         for name in without:
-            (bin_dir / name).unlink(missing_ok=True)
+            for path in (name, f"{name}.cmd", f"{name}.exe"):
+                (bin_dir / path).unlink(missing_ok=True)
         scenario_file = tmp_path / "scenario.json"
         scenario_file.write_text(json.dumps(scenario or {}))
         log.write_text("")

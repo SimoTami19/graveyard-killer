@@ -1,4 +1,4 @@
-Status: ready-for-agent
+Shipped. The spec the hand-run Worker was built from, kept as a record; the skill files and the ADRs describe current behaviour.
 
 # Spec: The Worker finishes the Inbox, run by hand
 

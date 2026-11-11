@@ -22,17 +22,17 @@ You have chosen this job, found the Library and read its Settings (see SKILL.md)
    - **prompt:** exactly this, with the Library link filled in:
 
      ```
-     Run the Graveyard Killer worker.
+     Run the Graveyard Killer worker with the graveyard-killer-worker skill, and pass it this whole message.
 
      Graveyard Killer Library: <the Library link>
 
-     This is a scheduled run: nobody watches it while it works. Ask nothing until the Ping at the end, as the worker skill says. Then answer the user's replies in this chat.
+     This is a scheduled run. When the skill returns, give its final message to the user as it is: it is the Ping. Then answer the user's replies in this chat with the graveyard-killer skill.
      ```
 
    Done when the tool confirms the task and its next run time.
 
 3. **Set the model and the approvals.** Your scheduling tool cannot set a task's model, so walk the user through it. Done when the user says both are done.
-   - In the Code tab's list of scheduled tasks, they open the Graveyard Killer task, edit it, and pick Sonnet as its model. The Worker asks for Sonnet itself, and this setting makes sure, so that a run never spends Opus or Fable usage.
+   - In the Code tab's list of scheduled tasks, they open the Graveyard Killer task, edit it, and pick Sonnet as its model. The Worker itself always runs on Sonnet; this setting also puts the run's chat, which passes on the Ping and answers the user, on Sonnet.
    - They select *Run now* once and choose "always allow" for each tool the run asks for, so that later runs never stop for an approval.
 
 4. **Tell the user**, in the Settings language: the time of the runs, that a run only happens while the Claude app is open and the computer is awake, and that a missed run catches up once at the next launch. Done when you have sent it.

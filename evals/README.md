@@ -25,7 +25,7 @@ Keep this line out of the prompt. The skill reads the first link in the user's m
 
 **Order.** Empty the test Library's Entries before a run. Evals 6 and 8 test duplicates: run each one right after the eval it repeats (5 and 1), without emptying the Library in between. Every other eval stands alone.
 
-These evals cannot cover what only the phone shows: whether the skill loads in the Claude Android app, whether each app's share menu delivers the link, and whether the phone's web fetch tool accepts the preview URLs. Check those by hand on the Pixel, using the list in the [Capture spec](../.scratch/capture/spec.md#testing-decisions).
+These evals cannot cover what only the phone shows: whether the skill loads in the Claude Android app, whether each app's share menu delivers the link, and whether the phone's web fetch tool accepts the preview URLs. Check those by hand on the Pixel, using the list in the [Capture spec](../docs/specs/capture.md#testing-decisions).
 
 ## Worker (`worker.json`)
 

@@ -1,32 +1,40 @@
-# Issue tracker: Local Markdown
+# Issue tracker: GitHub Issues
 
-Issues and specs for this repo live as markdown files in `.scratch/`.
+Issues live in GitHub Issues on `andreadorizza/graveyard-killer`. Work with them through the `gh` CLI, always passing `--repo andreadorizza/graveyard-killer`.
 
-`.scratch/` is committed to git and this repo is public, so write nothing private there.
+The repo and its issues are public, so write nothing private there.
 
 ## Conventions
 
-- One feature per directory: `.scratch/<feature-slug>/`
-- The spec is `.scratch/<feature-slug>/spec.md`
-- Implementation issues are one file per ticket at `.scratch/<feature-slug>/issues/<NN>-<slug>.md`, numbered from `01`, never a single combined tickets file
-- Triage state is recorded as a `Status:` line near the top of each issue file (see `triage-labels.md` for the role strings)
-- Comments and conversation history append to the bottom of the file under a `## Comments` heading
+- One issue per problem, question or feature.
+- A spec is an issue labelled `spec`. Its implementation tickets are separate issues whose body starts with `Part of #<spec>`.
+- Triage state is a label (see `triage-labels.md` for the role strings). Add `bug` or `enhancement` too when it fits.
+- Discussion goes in the issue's comments.
+- The specs of features that have shipped are kept as records in `docs/specs/`.
 
 ## When a skill says "publish to the issue tracker"
 
-Create a new file under `.scratch/<feature-slug>/` (creating the directory if needed).
+Write the body to a file, then:
+
+```
+gh issue create --repo andreadorizza/graveyard-killer --title "<title>" --body-file <file> --label needs-triage
+```
 
 ## When a skill says "fetch the relevant ticket"
 
-Read the file at the referenced path. The user will normally pass the path or the issue number directly.
+```
+gh issue view <number> --repo andreadorizza/graveyard-killer --comments
+```
+
+The user will normally pass the issue number or its link.
 
 ## Wayfinding operations
 
-Used by `/wayfinder`. The **map** is a file with one **child** file per ticket.
+Used by `/wayfinder`. The **map** is an issue with one **child** issue per ticket.
 
-- **Map**: `.scratch/<effort>/map.md` (the Notes / Decisions-so-far / Fog body).
-- **Child ticket**: `.scratch/<effort>/issues/NN-<slug>.md`, numbered from `01`, with the question in the body. A `Type:` line records the ticket type (`research`/`prototype`/`grilling`/`task`); a `Status:` line records `claimed`/`resolved`.
-- **Blocking**: a `Blocked by: NN, NN` line near the top. A ticket is unblocked when every file it lists is `resolved`.
-- **Frontier**: scan `.scratch/<effort>/issues/` for files that are open, unblocked, and unclaimed; first by number wins.
-- **Claim**: set `Status: claimed` and save before any work.
-- **Resolve**: append the answer under an `## Answer` heading, set `Status: resolved`, then append a context pointer (gist + link) to the map's Decisions-so-far in `map.md`.
+- **Map**: an issue labelled `map`, whose body holds the Notes, Decisions-so-far and Fog.
+- **Child ticket**: an issue whose body starts with `Part of #<map>`, then a `Type:` line (`research`/`prototype`/`grilling`/`task`), then the question.
+- **Blocking**: a `Blocked by: #N, #N` line near the top. A ticket is unblocked when every issue it lists is closed.
+- **Frontier**: the open, unblocked child issues of the map with no `claimed` label; the lowest number wins.
+- **Claim**: add the `claimed` label before any work.
+- **Resolve**: comment the answer under an `## Answer` heading, close the issue, then add a context pointer (gist + issue link) to the map's Decisions-so-far by editing the map issue's body.

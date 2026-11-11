@@ -104,8 +104,9 @@ Setup is a conversation on the computer, in the Code tab, after the plugin is ad
 - [ ] Claude's Sheets connector can append rows to an existing sheet.
 - [ ] The Instagram export parser handles a real export, including collections with no save date.
 - [x] Anonymous yt-dlp works for public reels from a home connection. (2026-10-24, yt-dlp 2026.10.21, metadata only, no cookies: an Instagram reel gave its author, its full caption and 8 formats. A TikTok short link gave its author, its caption and 10 formats.)
-- [ ] The skill's `model: sonnet` applies in a scheduled run. Check the model of one real run after 0.4.0.
-- [ ] A push from a scheduled run reaches the phone when the user is away from the computer. (2026-11-11: the push tool skipped it because the user was active in the Claude app.)
-- [ ] The user can answer a scheduled run's chat from the phone, through Remote Control.
+- [x] The Worker runs on Sonnet. (2026-11-11, CLI with the plugin loaded from the repo: a plain `model: sonnet` line did nothing when the model invoked the skill, and every turn ran on Opus. With `context: fork`, Sonnet did the Worker's work and Opus only started it and passed on its message. Not yet checked in a Desktop scheduled task: [#4](https://github.com/andreadorizza/graveyard-killer/issues/4).)
+- [x] Notion's query allowance. (2026-11-11: on a plan below Business, filtered and SQL queries share an allowance that resets within the hour, and heavy testing used it up. Reading a database view still worked.)
+- [ ] ✗ A push from a scheduled run reaches the phone. (2026-11-11, two runs: the push tool skipped it as "terminal active", and the Mac showed only the app's task-finished banner. Scheduled runs are not connected to Remote Control, so the tool has no route to the phone.)
+- [ ] ✗ The user can answer a scheduled run's chat from the phone. (2026-11-11: the run's chat did not show in the phone app. Remote Control connects only sessions the user starts, and `set_remote_control` refuses unattended sessions.)
 - [x] Which fields a page shared from Instagram through Notion's share sheet fills, and where its link sits. (2026-11-11, Pixel, into the test Library: the Link field holds the reel's link with a `psln` query, the title is what the user typed, the body is an embed of the link, and Status is empty.)
 - [x] A scheduled run can read the plan's usage. (2026-11-11: it could, with Claude Desktop's `get_usage`.)

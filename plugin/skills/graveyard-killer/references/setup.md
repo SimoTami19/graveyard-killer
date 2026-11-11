@@ -28,17 +28,16 @@ Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard 
 7. **Schedule the Worker,** as [schedule.md](schedule.md) says. Done when the daily task exists and the user has set its model, or the user said to do it later: then tell them to say "schedule the Graveyard Killer worker" when they are ready.
 
 8. **Set up the phone.** Walk the user through it, one step at a time. Done when a shared post arrived in Entries, or the user says they will do it later.
-   - **The pointer.** The Claude apps on the phone and the computer share one set of Instructions, in *Settings → Your Claude → Instructions*, which apply to every chat. Give them [the pointer](#the-pointer) to paste there. You cannot write it yourself.
+   - **The pointer.** The Claude apps on the phone and the computer share one set of Instructions, in *Settings → Your Claude → Instructions* (in the Italian app *Impostazioni → Il tuo Claude → Istruzioni*; in another language, give the path in English), which apply to every chat. Give them [the pointer](#the-pointer) to paste there. You cannot write it yourself.
    - **Save through Notion.** This is the main way to save, with no tokens and with the computer off. In Instagram, TikTok or YouTube, the user taps Share, picks Notion, chooses the Library's Entries database as the destination, and saves. On an iPhone they first turn Notion on under the share sheet's More. Then check that a row with the link arrived in Entries. Notion says its share sheet supports only browsers and the photo roll; if the app is missing or says the app is not supported, use the next route.
    - **Save through Claude.** The second way: share the post to the Claude app's Chat with no text. It costs a short chat, and for TikTok, YouTube and web links it writes a first summary at once. From Instagram it gets only the link.
 
 9. **Pick how Pings arrive.** Explain that a run sends a Ping only when it has an offer for them or a problem only they can fix, and that they answer in that run's chat, in Claude Desktop on this computer: a scheduled run cannot be opened from the phone. Offer, and write the choice to "Ping by" in the Settings' Pings section. Then send a test Ping through it and ask whether it arrived. Done when the user confirms, or chose `none`.
    - `push`: a notification on this computer, from Claude Desktop. It does not reach the phone, since scheduled runs are never connected to Remote Control.
-   - `email`: an email to themselves, through their Gmail connector.
-   - `notion`: a comment that mentions them on the Library page. Notion may not notify you about a mention you wrote through your own connector, so the test matters here.
+   - `email`: an email to themselves, through their Gmail connector. If their Gmail app notifies only for important mail, a Gmail filter on the subject "Graveyard Killer" with *Always mark it as important* makes it notify.
    - `none`: no alert. They open the run's chat in the Claude app when they like.
 
-10. **Offer the Graveyard.** Explain that their old saves can come in as Buried Entries, and how to request the exports (see [graveyard.md](graveyard.md#import-the-graveyard)). The exports take a few hours to about 2 days. Once they arrive, the user says "import my Graveyard Killer graveyard". Done when you have told them.
+10. **Offer the Graveyard.** Explain that their old saves can come in as Buried Entries, and how to request the exports (see [graveyard.md](graveyard.md#import-the-graveyard)). An export can take up to 30 days on Instagram and a few days on TikTok, and its download link expires after a few days. Once they arrive, the user says "import my Graveyard Killer graveyard". Done when you have told them.
 
 11. **Say how updates arrive.** To get the newest version, the user opens *Customize → Plugins* in the Claude app and selects *Check for updates* on the Graveyard Killer marketplace. Done when you have told them.
 

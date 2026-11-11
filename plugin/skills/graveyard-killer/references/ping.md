@@ -29,7 +29,6 @@ Done when you hold the three parts below, each of them possibly empty.
 2. **Alert the user** through "Ping by" in the Settings' Pings section, with one short line about the most urgent item, such as "Graveyard Killer: the Roma concert is on Saturday". Skip the alert when the run was not scheduled: the user is already in this chat. Done when the alert is sent, or failed and you noted why.
    - **push:** your push notification tool, `PushNotification` in Claude Desktop. From a scheduled run it reaches only this computer, since scheduled runs have no Remote Control, and it skips the alert while the user is active there.
    - **email:** an email to the user's own address through their Gmail connector, saying to open the chat named after the scheduled task in the Claude app.
-   - **notion:** a comment on the Library page that mentions the user.
    - **none**, or empty: no alert. The chat waits in the app's list of runs.
 3. **Record it** in the Settings' Pings section: "Last Ping" is today, and "Last Digest" too when the Ping brings the Digest. Done when both are saved.
 4. **End the run with the Ping** as your final message, in this order. Done when it is written:

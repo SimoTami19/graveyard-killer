@@ -109,4 +109,6 @@ Setup is a conversation on the computer, in the Code tab, after the plugin is ad
 - [ ] ✗ A push from a scheduled run reaches the phone. (2026-11-11, two runs: the push tool skipped it as "terminal active", and the Mac showed only the app's task-finished banner. Scheduled runs are not connected to Remote Control, so the tool has no route to the phone.)
 - [ ] ✗ The user can answer a scheduled run's chat from the phone. (2026-11-11: the run's chat did not show in the phone app. Remote Control connects only sessions the user starts, and `set_remote_control` refuses unattended sessions.)
 - [x] Which fields a page shared from Instagram through Notion's share sheet fills, and where its link sits. (2026-11-11, Pixel, into the test Library: the Link field holds the reel's link with a `psln` query, the title is what the user typed, the body is an embed of the link, and Status is empty.)
+- [x] An email to yourself from a scheduled run, through the Gmail connector, arrives (2026-11-11, Auto mode). Gmail showed no notification because it didn't mark it as important.
+- [ ] ✗ A Notion comment mentioning the user, made through their own connector, notifies them. (2026-11-11: the comment was created; no notification came. Dropped in 0.4.2.)
 - [x] A scheduled run can read the plan's usage. (2026-11-11: it could, with Claude Desktop's `get_usage`.)

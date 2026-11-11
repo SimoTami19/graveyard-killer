@@ -11,11 +11,11 @@ You have chosen one of the jobs below, found the Library and read its Settings (
 The user asks Graveyard Killer to import their Graveyard. The import runs on the computer, where the export files are.
 
 1. **Find the exports.** Ask where the export files are, unless the user said. They are zips or folders from:
-   - Instagram: *Accounts Center → Your information and permissions → Download your information*, in **JSON** format;
+   - Instagram: *Accounts Center → Your information and permissions → Export your information → Create export*, choosing **JSON** as the format (in Italian: *Centro gestione account → Le tue informazioni e autorizzazioni → Esporta le tue informazioni → Crea esportazione*);
    - TikTok: *Settings → Account → Download your data*, in **JSON** format;
    - YouTube: Google Takeout, with *YouTube and YouTube Music* selected.
 
-   Done when you hold their paths.
+   An export can take up to 30 days on Instagram, a few days on TikTok, and minutes to days on Google Takeout. Its download link then expires, after 4 days on Instagram and TikTok and about 7 on Takeout, so the user should download it soon. Done when you hold their paths.
 
 2. **Read them.** Run `python3 scripts/graveyard.py "<path>" ["<path>" …]` from this skill's folder. It prints `posts` (newest first), `collections` and `warnings`. Done when you hold the result.
    - Tell the user about every warning. An HTML export must be requested again in JSON.

@@ -156,7 +156,7 @@ Ogni giorno 13:00
 - **Categories.** Exactly one is the fallback. The Category options in the Entries database are the Category names from this table.
 - **Schedule.** When the Worker runs, in local time: every day by default, or the weekdays the user chose.
 - **Limits.** How many posts the Worker may download, counted from the Processed dates ([worker.md](worker.md#steps), step 2).
-- **Pings.** "Ping by" is how a Ping reaches the user: `push`, `email`, `notion` or `none` ([ping.md](ping.md#send-it)). "Last Ping" and "Last Digest" are dates, or empty.
+- **Pings.** "Ping by" is how a Ping reaches the user: `push`, `email` or `none`. A Library from 0.4.0 may hold `notion`, which never notified the user: treat it as `none` ([ping.md](ping.md#send-it)). "Last Ping" and "Last Digest" are dates, or empty.
 - **Preferences.** One row per kind of Proposal: its Category and action, and the user's answer (always, ask me or never, in the Settings language). It starts empty ([ping.md](ping.md)).
 - **Graveyard.** "Dig up next" is a Category the user asked to see first, or empty. "Last import" is the date of the last Graveyard import, or empty.
 

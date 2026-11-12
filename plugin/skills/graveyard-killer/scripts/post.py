@@ -15,6 +15,7 @@ https://github.com/bradautomates/claude-video). No code is copied from it.
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import os
 import re
@@ -140,6 +141,18 @@ def speech_model(engine: Engine) -> str:
     return "downloaded" if (Path(cache) / engine.model_cache).is_dir() else "not downloaded"
 
 
+def missing_tools() -> str:
+    """The tools that read needs and cannot find, for the error message.
+
+    Windows leaves FileNotFoundError.filename empty, so the name comes from a lookup.
+    It only looks for .exe files, the only kind post.py starts on Windows, and runs nothing.
+    """
+    names = ["yt-dlp", "gallery-dl", "ffmpeg", "ffprobe", *(engine.program for engine in engines())]
+    suffix = ".exe" if system() == "Windows" else ""
+    gone = [name for name in names if not shutil.which(name + suffix)]
+    return ", ".join(gone) or "a tool"
+
+
 def read(link: str, language: str | None = None) -> dict[str, Any]:
     if not WEB_LINK.match(link):
         # Refused before any tool runs: a "link" such as "--exec=..." would be read as an option.
@@ -148,7 +161,7 @@ def read(link: str, language: str | None = None) -> dict[str, Any]:
     try:
         return read_post(link, folder, language)
     except FileNotFoundError as missing:
-        return not_ok(link, folder, f"{missing.filename} is not installed")
+        return not_ok(link, folder, f"{missing.filename or missing_tools()} is not installed")
     except subprocess.CalledProcessError as broken:
         output = broken.stderr
         if isinstance(output, bytes):
@@ -229,7 +242,7 @@ def read_photos(link: str, folder: Path) -> dict[str, Any]:
     if not images:
         return not_ok(link, folder, "no images found in the post")
     metadata_file = Path(f"{images[0]}.json")
-    metadata: dict[str, Any] = json.loads(metadata_file.read_text()) if metadata_file.exists() else {}
+    metadata: dict[str, Any] = json.loads(metadata_file.read_text(encoding="utf-8")) if metadata_file.exists() else {}
     return photos(parse_link(info.get("webpage_url") or link), folder, images,
                   first_text(metadata, "username", "uploader", "author", "user"),
                   first_text(metadata, "description", "desc", "content", "caption") or "")
@@ -353,14 +366,15 @@ def captions(link: str, track: str, source: str, folder: Path) -> str:
          "--no-warnings", "-o", str(folder / "subs.%(ext)s"), "--", link],
         capture_output=True, text=True, check=True,
     )
-    return vtt_text((folder / f"subs.{track}.vtt").read_text())
+    # yt-dlp writes UTF-8; without the encoding, Windows would read it as its own code page.
+    return vtt_text((folder / f"subs.{track}.vtt").read_text(encoding="utf-8"))
 
 
 def vtt_text(vtt: str) -> str:
     """Caption text without timings, tags, or the lines automatic captions repeat."""
     lines: list[str] = []
     for line in vtt.splitlines():
-        line = re.sub(r"<[^>]+>", "", line).strip()
+        line = html.unescape(re.sub(r"<[^>]+>", "", line)).strip()  # captions keep entities such as &gt;
         if not line or line == "WEBVTT" or "-->" in line or line.isdigit():
             continue
         if line.startswith(("Kind:", "Language:", "NOTE")):
@@ -512,7 +526,7 @@ def transcribe(media: Path, out_dir: Path, language: str | None) -> tuple[str, s
     if language and engine.name == "whisper":  # Parakeet takes no language option
         command += ["--language", language]
     subprocess.run(command, capture_output=True, text=True, check=True)
-    result = json.loads((out_dir / f"{media.stem}.json").read_text())
+    result = json.loads((out_dir / f"{media.stem}.json").read_text(encoding="utf-8"))
     return str(result.get("text", "")).strip(), result.get("language") or language, engine.name
 
 

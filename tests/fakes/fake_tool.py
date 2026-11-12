@@ -23,6 +23,8 @@ from pathlib import Path
 from typing import Any
 
 tool = Path(sys.argv[0]).name
+if tool.lower().endswith(".exe"):  # the Windows launcher made by the test fixture
+    tool = tool[: -len(".exe")]
 argv = sys.argv[1:]
 
 log = Path(os.environ["GK_FAKE_LOG"])
@@ -65,7 +67,7 @@ if tool == "yt-dlp":
             shutil.copy(image, folder / f"{i:02d}{Path(image).suffix}")
     elif "--skip-download" in argv:
         langs = option("--sub-langs")
-        Path(f"{base}.{langs}.vtt").write_text(response["subs"])
+        Path(f"{base}.{langs}.vtt").write_text(response["subs"], encoding="utf-8")  # as yt-dlp writes it
     else:
         if "media" in response:
             target = f"{base}{Path(response['media']).suffix}"

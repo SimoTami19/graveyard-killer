@@ -188,6 +188,27 @@ def test_original_language_automatic_captions_come_before_whisper(
     assert speech_calls(run) == []
 
 
+ACCENTED_VTT = """WEBVTT
+Kind: captions
+Language: it
+
+00:00:00.000 --> 00:00:02.000
+le novità del campo legale &gt;&gt; [musica]
+"""
+
+
+def test_captions_are_read_as_utf8_and_their_entities_decoded(
+    post: Callable[..., Run], media: dict[str, Path]
+) -> None:
+    # yt-dlp writes UTF-8 and keeps HTML entities; Windows' default encoding is not UTF-8.
+    scenario = youtube(media, subtitles={"en": [{"ext": "vtt"}]})
+    scenario["yt-dlp"][1] = {"subs": ACCENTED_VTT}
+
+    run = post("read", VIDEO, scenario=scenario)
+
+    assert run.output["transcript"] == "le novità del campo legale >> [musica]"
+
+
 def test_a_short_link_resolves_to_the_canonical_post_link(
     post: Callable[..., Run], media: dict[str, Path]
 ) -> None:
@@ -474,7 +495,7 @@ def test_check_lists_each_missing_tool_with_its_install_command(post: Callable[.
     assert missing.keys() == {"gallery-dl", "ffmpeg", "whisper"}
     assert missing["gallery-dl"] == "uv tool install gallery-dl"
     assert "whisper" in missing["whisper"] and missing["whisper"].startswith("uv tool install")
-    assert "ffmpeg" in missing["ffmpeg"]
+    assert "ffmpeg" in missing["ffmpeg"].lower()  # winget's id is Gyan.FFmpeg
 
 
 def test_clean_deletes_a_work_folder_that_read_made(post: Callable[..., Run], media: dict[str, Path]) -> None:

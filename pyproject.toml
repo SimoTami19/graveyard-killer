@@ -15,3 +15,8 @@ addopts = "-m 'not live'"
 [tool.mypy]
 strict = true
 files = ["plugin/skills/graveyard-killer/scripts", "tests"]
+
+[[tool.mypy.overrides]]
+# Windows-only test dependency with no type hints: absent on macOS and Linux, untyped on Windows.
+module = ["distlib.*"]
+ignore_missing_imports = true

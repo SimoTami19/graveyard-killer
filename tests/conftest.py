@@ -38,7 +38,7 @@ def fake_launcher(tmp_path_factory: pytest.TempPathFactory) -> Path | None:
     """
     if os.name != "nt":
         return None
-    from distlib.scripts import ScriptMaker  # type: ignore[import-untyped]
+    from distlib.scripts import ScriptMaker
 
     maker = ScriptMaker(str(FAKE.parent), str(tmp_path_factory.mktemp("launcher")))
     maker.executable = sys.executable

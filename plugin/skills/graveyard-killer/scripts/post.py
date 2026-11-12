@@ -40,8 +40,9 @@ AT_MOST_720P = "bv*[height<=720]+ba/b[height<=720]/bv*+ba/b"
 NOTION_UPLOAD_LIMIT = 5 * 1024 * 1024  # bytes, on Notion's Free plan
 NOTION_TEXT_BLOCK = 1800  # characters per page-body block, under Notion's 2,000 limit
 # Matched, in this order and ignoring case, against the tool's last error line.
-NEEDS_LOGIN = ("rate-limit reached", "login required", "redirect to login", "/accounts/login",
-               "sign in to confirm", "checkpoint_required", "challenge_required", "authorizationerror")
+NEEDS_LOGIN = ("rate-limit reached", "login required", "requiring login", "redirect to login",
+               "/accounts/login", "only available for registered users", "sign in to confirm",
+               "checkpoint_required", "challenge_required", "authorizationerror")
 UNAVAILABLE = ("video unavailable", "private video", "this video is private", "removed by",
                "http error 404", "404 not found", "does not exist", "this post is unavailable")
 NO_VIDEO = ("no video", "unsupported url")

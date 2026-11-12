@@ -7,6 +7,8 @@ description: Capture a shared post into the user's Graveyard Killer Library, and
 
 Graveyard Killer files the posts a user sends you into their own **Library**, a Notion page they own. Each post becomes one **Entry**. You do the work through the user's own connectors: there is no server and no API key.
 
+The scripts in this skill run with `python3`. On Windows, `python3` can be the Microsoft Store's placeholder, which prints "Python was not found" and exits with code 49. Then use `py -3` in its place for every script.
+
 Talk to the user in the language set in their Library's **Settings**. Keep this skill's own words (field and Status names) for your thinking, and write the Library's names into the Library.
 
 With the user, use plain words in their language instead of this skill's terms, and recognise those words when they write them:

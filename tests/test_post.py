@@ -118,6 +118,7 @@ def test_a_video_without_sound_has_no_transcript_and_skips_whisper(
 
 
 VIDEO = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+TIKTOK = "https://www.tiktok.com/@someone/video/7400000000000000001"
 VIDEO_INFO = {
     "extractor_key": "Youtube",
     "id": "dQw4w9WgXcQ",
@@ -318,6 +319,10 @@ def test_a_removed_private_or_missing_post_is_unavailable(post: Callable[..., Ru
         (REEL, "ERROR: [Instagram] Rk3elTest01: Requested content is not available, rate-limit reached "
                "or login required. Use --cookies, --cookies-from-browser, --username and --password"),
         (VIDEO, "ERROR: [youtube] dQw4w9WgXcQ: Sign in to confirm you're not a bot."),
+        (TIKTOK, "ERROR: [TikTok] 7400000000000000001: TikTok is requiring login for access to this "
+                 "content. Use --cookies-from-browser or --cookies for the authentication."),
+        (VIDEO, "ERROR: [youtube] dQw4w9WgXcQ: This video is only available for registered users. "
+                "Use --cookies-from-browser or --cookies for the authentication."),
     ],
 )
 def test_a_login_challenge_needs_login_and_is_not_retried(
@@ -328,6 +333,14 @@ def test_a_login_challenge_needs_login_and_is_not_retried(
     assert run.output["status"] == "needs_login"
     assert len(run.called("yt-dlp")) == 1
     assert run.called("uv") == []
+
+
+def test_a_link_with_shell_characters_reaches_the_tool_unchanged(post: Callable[..., Run]) -> None:
+    # On Windows a .cmd or .bat tool would run through cmd.exe, where & and | start commands.
+    link = VIDEO + "&t=1|whoami&echo=%20x"
+    run = post("read", link, scenario={"yt-dlp": [{"exit": 1, "stderr": "ERROR: Video unavailable"}]})
+
+    assert run.called("yt-dlp")[0][-1] == link
 
 
 FORBIDDEN = "ERROR: [youtube] dQw4w9WgXcQ: Unable to download video data: HTTP Error 403: Forbidden"

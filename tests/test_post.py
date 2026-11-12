@@ -299,6 +299,7 @@ def test_without_a_thumbnail_the_first_keyframe_stands_in(
     "error",
     [
         "ERROR: [youtube] aaaaaaaaaaa: Video unavailable",
+        "ERROR: [youtube] aaaaaaaaaaa: This video is unavailable",
         "ERROR: [youtube] dQw4w9WgXcQ: Video unavailable. This video has been removed by the uploader",
         "ERROR: [youtube] dQw4w9WgXcQ: Private video. Sign in if you've been granted access to this video",
         "ERROR: [TikTok] 7400000000000000001: Unable to download webpage: HTTP Error 404: Not Found",

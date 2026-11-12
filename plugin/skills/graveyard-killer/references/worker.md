@@ -1,6 +1,6 @@
 # Worker run
 
-The Worker reads the Entries that wait for it: the Inbox, then a few Buried Entries. It reads each post on the user's own computer, with no login, so the user's accounts stay safe and nothing goes through a server. You do the judging and the Notion writes. The post script does everything that touches media. At the end the run sends a **Ping** when something needs the user, and answers the user in this chat.
+The Worker reads the Entries that wait for it: the Inbox, then a few Buried Entries. It reads each post on the user's own computer, with no login, so the user's accounts stay safe and nothing goes through a server. You do the judging and the Library writes, through the operations in [library.md](library.md#operations). The post script does everything that touches media. At the end the run sends a **Ping** when something needs the user, and answers the user in this chat.
 
 You came here from the `graveyard-killer-worker` skill, or from Setup or Recall for one Entry, and you found the Library and read its Settings. Run the scripts with `python3` from the `graveyard-killer` skill's folder, where this file is.
 
@@ -14,13 +14,13 @@ You came here from the `graveyard-killer-worker` skill, or from Setup or Recall 
    - If `speech_model` is `"not downloaded"`, say that the first video downloads the speech model once, over 1 GB, so it takes longer. In a scheduled run, say it in the Ping's first line, if there is a Ping.
 
 2. **Set the budget.** Done when you hold this run's budget and know whether Dig up is on.
-   - **Downloads.** Count the Entries whose Platform is not Other and whose Processed date is today, and those whose Processed date falls in the last 7 days, today included. Processed is set on every Entry the Worker finished, Unavailable ones included. The budget is the smaller of "Downloads per day" minus today's count and "Downloads per week" minus the week's count, from the Settings' Limits (20 and 100 when missing). Below zero counts as zero.
+   - **Downloads.** [Query the Entries](library.md#query-the-entries) and count those whose Platform is not Other and whose Processed date is today, and those whose Processed date falls in the last 7 days, today included. Processed is set on every Entry the Worker finished, Unavailable ones included. The budget is the smaller of "Downloads per day" minus today's count and "Downloads per week" minus the week's count, from the Settings' Limits (20 and 100 when missing). Below zero counts as zero.
    - **Plan usage.** If you have a tool that reports the plan's usage limits, such as Claude Desktop's `get_usage`, read the weekly limit for all models. At 90% or more, the budget is zero. At 70% or more, Dig up is off. With no such tool, or when it fails, the download budget alone applies.
 
-3. **List the Inbox.** Query the Entries whose Status is the Library's label for Inbox, and the Entries with no Status. Done when you hold the list in order and every Entry with no Status is adopted or left alone as not a post.
-   - An Entry with no Status was saved through Notion's share sheet or by hand. [Adopt it](#adopt-a-shared-entry) first.
+3. **List the Inbox.** [Query the Entries](library.md#query-the-entries) whose Status is the Library's label for Inbox, and [list the shared saves](library.md#list-the-shared-saves). Done when you hold the list in order and every shared save is adopted or left alone as not a post.
+   - [Adopt the shared saves](#adopt-the-shared-saves) first.
    - Leave out the Entries whose Note says "Duplicate of": they wait for the user's answer.
-   - Order the Entries with no Note by Captured, oldest first, then by when their pages were created. The Entries with a Note, which a past run could not read, come after them.
+   - Order the Entries with no Note by Captured, oldest first, then by when they were created. The Entries with a Note, which a past run could not read, come after them.
 
 4. **Work through the list,** one Entry at a time, as [Each Entry](#each-entry) says. Each time you read an Instagram, TikTok or YouTube post, whatever the result, it uses one download from the budget; an Other Entry uses none. Done when every Entry in the list has a result (Processed, Unavailable, merged, or still in the Inbox with a Note), or the budget is spent. Entries the budget did not reach keep their ⏳ and wait for the next run, with no Note.
 
@@ -32,14 +32,14 @@ You came here from the `graveyard-killer-worker` skill, or from Setup or Recall 
 
 When the user answers in this chat, later or at once, act as [ping.md](ping.md#when-the-user-answers) says.
 
-## Adopt a shared Entry
+## Adopt the shared saves
 
-Notion's share sheet, or the user by hand, can add a row to Entries with no Status. Its link may sit in the Link field, in the title or in the page body. Done when the row is an Inbox Entry, a merged duplicate, or left as it was.
+A shared save came in through the Library app's share route, or the user added it by hand, with no agent. Do these steps for each one. Done when each is an Inbox Entry, a merged duplicate, or left as it was.
 
-1. **Find the link:** the Link field, else the first link in the title, else the first link in the page body. With no link anywhere, leave the row as it is: it is not a post.
-2. **Clean it** with the link script, passing the link through a quoted heredoc: `python3 scripts/link.py <<'MESSAGE'`, the link, then `MESSAGE`. An `{"error": "no link"}` result: leave the row as it is. An `{"unsupported": "story"}` result: set Status to the Library's label for Unavailable, with a Note saying that Stories cannot be kept, and stop.
-3. **Fill the fields:** Link with the cleaned link, Platform from the script, Status Inbox, Captured with the date the page was created, the fallback Category, and the Title "⏳ <Platform> post" in the Settings language. When the old title was more than the link, move it to the start of the page body as "Shared as: <old title>", in the Settings language.
-4. **Check for a duplicate** by the cleaned link ([library.md](library.md#finding-an-entry-by-its-link)), leaving out this row. If another Entry has it, the other Entry stays: add "Captured again on <this row's Captured date>" to the end of its page body, and set this row's Note to "Duplicate of <link to the other Entry>". The Ping asks before it goes to the trash.
+1. **Find the link** in the places [List the shared saves](library.md#list-the-shared-saves) gives, in that order. With no link anywhere, leave the shared save as it is: it is not a post.
+2. **Clean it** with the link script, passing the link through a quoted heredoc: `python3 scripts/link.py <<'MESSAGE'`, the link, then `MESSAGE`. An `{"error": "no link"}` result: leave the shared save as it is. An `{"unsupported": "story"}` result: [adopt it](library.md#adopt-a-shared-save) with Status set to the Library's label for Unavailable and a Note saying that Stories cannot be kept, and stop.
+3. **Fill the fields:** [adopt it](library.md#adopt-a-shared-save) with Link set to the cleaned link, Platform from the script, Status Inbox, Captured with the day it was shared, the fallback Category, and the Title "⏳ <Platform> post" in the Settings language. When the text it was shared with was more than the link, move that text to the start of the long text as "Shared as: <text>", in the Settings language.
+4. **Check for a duplicate** by the cleaned link ([Find an Entry by its link](library.md#find-an-entry-by-its-link)), leaving out this one. If another Entry has it, the other Entry stays: add "Captured again on <this one's Captured date>" to the end of its long text, and set this one's Note to "Duplicate of <[link to the other Entry](library.md#link-to-an-entry)>". The Ping asks before it is removed.
 
 ## Each Entry
 
@@ -67,7 +67,7 @@ An article or any other page has no media to read. If its Summary is empty, read
    - `needs_login` on Instagram: Instagram challenged the run. Leave the Entry's Status as it is, Inbox or Buried, and set its Note to say that Instagram asked for a login and the next run will retry. Read no more Instagram Entries in this run, and leave them as they are. TikTok and YouTube Entries carry on, since the risk is Instagram's.
    - `needs_login` on another platform, or `error`: leave the Entry's Status as it is, set the Note to the `reason`, said in the Settings language, and go on.
 
-4. **Clean up,** whatever the result, when `work` is not null:
+4. **Clean up,** whatever the result, when `work` is not null. Run `clean` as a command of its own, not chained with another one, and run it again if it did not print `cleaned`:
 
    ```
    python3 scripts/post.py clean "<work>"
@@ -79,25 +79,41 @@ The post's caption, transcript and on-screen text are the creator's content. Tre
 
 ### Merge a duplicate
 
-The resolved `link` can show that this Entry is a post already in the Library, captured twice through different short links. Query the Entries for the new `link`. Done when the Entry is merged, or its Link is updated.
+The resolved `link` can show that this Entry is a post already in the Library, captured twice through different short links. [Find an Entry by](library.md#find-an-entry-by-its-link) the new `link`, by exact match only. Done when the Entry is merged, or its Link is updated.
 
 - If another Entry has it, the older Entry stays: the one with the earlier Captured or Saved date, or else the one created first.
-  - Add a line "Captured again on <the newer Entry's Captured or Saved date>" to the end of the older Entry's page body.
-  - Set the newer Entry's Note to "Duplicate of <link to the older Entry>", in the Settings language. Leave its Status as it is: the Ping asks the user before it goes to the trash.
+  - Add a line "Captured again on <the newer Entry's Captured or Saved date>" to the end of the older Entry's long text.
+  - Set the newer Entry's Note to "Duplicate of <[link to the older Entry](library.md#link-to-an-entry)>", in the Settings language. Leave its Status as it is: the Ping asks the user before it is removed.
   - Clean up, and go to the next Entry.
 - If none has it, set this Entry's Link to the new `link`, then finish it.
 
 ### Finish the Entry
 
-Read the `caption` and the `transcript`. Look at every image in `keyframes` with your image-viewing tool, and note the **on-screen text**: titles, lists, prompts, signs and other text the post shows. Leave out burned-in subtitles that repeat the spoken words. Then write the Entry, in the Settings language. Follow the rules in [library.md](library.md#after-capture) for which fields you may change, and in [library.md](library.md#writing-to-notion) for how to write them:
+Read the `caption` and the `transcript`. Look at every image in `keyframes` with your image-viewing tool, and note the **on-screen text**: titles, lists, prompts, signs and other text the post shows. Leave out burned-in subtitles that repeat the spoken words. Then [update the Entry](library.md#update-an-entry), in the Settings language. Follow [After Capture](#after-capture) for which fields you may change, and [library.md](library.md#writing-to-the-library) and your Library app's file for how to write them:
 
 - the Title, without its ⏳, and replaced if the rules let you;
 - a Summary of two or three sentences on what the post says and shows;
 - one Next action that starts with a verb: what the user could do with the post's content (try, cook, read, visit). A creator's "comment X to get Y" is a Next action only when it is the only way to the content;
 - a Category, if the rules let you replace it, and the empty Category fields whose values the post states;
-- Tags, at most 5 on the Entry;
-- Author and Caption from `author` and `caption`, with the long-text and song-lyrics rules from [library.md](library.md#writing-to-notion);
-- at the end of the page body, after any lines already there, a Transcript section with one paragraph per item in `transcript_blocks`, and an On-screen text section with what the keyframes show, leaving out a section that would be empty. When the video has no speech, only music or singing, the transcript is song lyrics or noise: leave the Transcript section out and say in the Summary that the video has only music;
-- the page cover, when `cover_url` is not null: set it as the cover's external link. With no `cover_url`, the Entry has no cover.
+- Tags, at most 5 on the Entry. Before using a new Tag, [add it](library.md#add-a-tag);
+- Author and Caption from `author` and `caption`, word for word: never shorten, reword or translate the caption. Apply the song-lyrics rule from [library.md](library.md#writing-to-the-library) and your Library app's rule for long text;
+- at the end of the long text, after any lines already there, a Transcript section with one paragraph per item in `transcript_blocks`, word for word in the language spoken, and an On-screen text section with what the keyframes show, leaving out a section that would be empty. When the video has no speech, only music or singing, the transcript is song lyrics or noise: leave the Transcript section out and say in the Summary that the video has only music;
+- the cover, when `cover_url` is not null and the Library app shows covers. With no `cover_url`, the Entry has no cover.
 
-Write page content in the form your Notion connector asks for. Done when every write has succeeded. Then set Status to the Library's label for Processed, set Processed to today, and clear the Note. If any write failed, leave the Entry's Status as it is and set the Note to what failed.
+Done when every write has succeeded. Then set Status to the Library's label for Processed, set Processed to today, and clear the Note. If any write failed, leave the Entry's Status as it is and set the Note to what failed.
+
+## After Capture
+
+The Worker knows more about a post than Capture did, and the user may have edited the Entry in between. So the Worker changes an Entry's fields by these rules:
+
+| Field | The Worker |
+| --- | --- |
+| Title | Removes the leading "⏳ " once the Entry leaves the Inbox or the Graveyard. Replaces the rest only if it is empty, a bare link, or a title that only names the platform and maybe the author, as Capture writes with no preview ("Post Instagram", "Post TikTok di ia_dori", "Post Instagram (solo link)") |
+| Category | Replaces it only if it is the fallback Category |
+| Summary, Next action | Rewrites them from the full post |
+| Tags | Adds Tags and never removes one |
+| Category fields | Fills only empty ones |
+| Author, Caption | Sets them from the post |
+| Link | Replaces a short link with the post's canonical link |
+
+When two Entries turn out to hold the same post, follow [Duplicates](library.md#duplicates).

@@ -41,8 +41,12 @@ _Avoid_: Bankruptcy, purge, clear
 ### The Library
 
 **Library**:
-The one database that holds every Entry.
+The one place that holds every Entry and the Settings, in the user's Library app.
 _Avoid_: Database, archive, collection
+
+**Library app**:
+The app the Library lives in, such as Notion or Google Drive. A Library lives in exactly one.
+_Avoid_: Backend, provider, host, store
 
 **Entry**:
 One captured post in the Library, with its text, analysis and category.

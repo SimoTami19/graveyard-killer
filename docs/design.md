@@ -12,6 +12,10 @@ This page records v1. Version 0.4.0 changes it after the launch feedback; where 
 - **Placeholders** carry ⏳ in their title until the Worker reads them, and replies never promise a time.
 - **The pointer** to the Library, with a recall hint, lives in the account-wide Instructions instead of chat memory ([ADR-0002](adr/0002-settings-live-in-the-library.md)).
 
+## Changed in 0.4.4
+
+- **Library apps.** A Library lives in one Library app. Jobs name the operations in `library.md`, and each app has its own files that say how it does them, so an agent loads only its own app's rules ([ADR-0005](adr/0005-a-library-in-more-than-one-app.md)). Notion is the only app in 0.4.4; Google Drive follows.
+
 ## Parts
 
 - **Plugin.** A Claude plugin marketplace with one plugin. Inside it is a standard Agent Skill: `SKILL.md` plus Python scripts. Both scripts, Capture's link script and the Worker's post script, use only the Python standard library and run with `python3`, so the link script also runs in a phone app's sandbox. The tools the post script calls (yt-dlp, gallery-dl, Whisper) are installed with uv. Everything is written in English, and the agent talks in the user's language.

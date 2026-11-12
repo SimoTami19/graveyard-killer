@@ -20,13 +20,13 @@ The user asks Graveyard Killer to import their Graveyard. The import runs on the
 2. **Read them.** Run `python3 scripts/graveyard.py "<path>" ["<path>" …]` from this skill's folder. It prints `posts` (newest first), `collections` and `warnings`. Done when you hold the result.
    - Tell the user about every warning. An HTML export must be requested again in JSON.
 
-3. **Leave out what the Library already holds.** Read every Link in the Library once, through the default view ([library.md](library.md#querying-the-entries)). A post is already there when a Link equals its link or contains its `id`. Done when you know the new posts.
+3. **Leave out what the Library already holds.** Read every Link in the Library once, with [Query the Entries](library.md#query-the-entries). A post is already there when a Link equals its link or contains its `id`. Done when you know the new posts.
 
-4. **Match collections to Categories.** A post whose collection has the same name as a Category in the Settings, or an obvious match, gets that Category. Every other post gets the fallback Category. If some collections have no matching Category, list them and ask once whether to add them as Categories. On a yes, add them to the Settings' Categories table and to the Category property's options, as [library.md](library.md#writing-to-notion) explains for options. Done when every new post has a Category.
+4. **Match collections to Categories.** A post whose collection has the same name as a Category in the Settings, or an obvious match, gets that Category. Every other post gets the fallback Category. If some collections have no matching Category, list them and ask once whether to add them as Categories. On a yes, [add them all as Categories](library.md#add-a-category) in one go. Done when every new post has a Category.
 
 5. **Tell the user what will be imported:** the count per platform and per Category. Ask once to go ahead. Done when they answer.
 
-6. **Create the Buried Entries**, in batches, with:
+6. **[Create the Buried Entries](library.md#create-an-entry)**, in batches, with:
    - **Title:** "⏳ <Platform> post", or "⏳ <Platform> post by <author>", in the Settings language;
    - **Link, Platform, Author, Category:** from the post;
    - **Saved:** the post's `saved` date;
@@ -40,7 +40,7 @@ The user asks Graveyard Killer to import their Graveyard. The import runs on the
 
 After the Inbox, the Worker run digs up Buried Entries with what is left of its budget ([worker.md](worker.md#steps), step 2):
 
-1. **Pick them.** Query the Entries whose Status is the Library's label for Buried. If "Dig up next" names a Category, take that Category's Entries first. Order them by Saved, newest first, with empty dates last, and put the Entries with a Note, which a past run could not read, after all the others. Take as many as the budget leaves. Done when you hold the list.
+1. **Pick them.** [Query the Entries](library.md#query-the-entries) whose Status is the Library's label for Buried. If "Dig up next" names a Category, take that Category's Entries first. Order them by Saved, newest first, with empty dates last, and put the Entries with a Note, which a past run could not read, after all the others. Take as many as the budget leaves. Done when you hold the list.
 2. **Finish each one exactly like an Inbox Entry** (see [worker.md](worker.md#each-entry)). A dug-up Entry ends Processed, Unavailable or merged, or stays Buried with its ⏳ and a Note when it could not be read. The pause before Instagram Entries and the stop at an Instagram challenge cover dug-up Entries too. Done when each one has its result.
 
 When the user asks to dig up a Category next ("dig up my recipes next"), set "Dig up next" to that Category. When that Category has no Buried Entries left, clear it.

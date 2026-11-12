@@ -43,7 +43,7 @@ NOTION_TEXT_BLOCK = 1800  # characters per page-body block, under Notion's 2,000
 NEEDS_LOGIN = ("rate-limit reached", "login required", "requiring login", "redirect to login",
                "/accounts/login", "only available for registered users", "sign in to confirm",
                "checkpoint_required", "challenge_required", "authorizationerror")
-UNAVAILABLE = ("video unavailable", "private video", "this video is private", "removed by",
+UNAVAILABLE = ("video unavailable", "video is unavailable", "private video", "this video is private", "removed by",
                "http error 404", "404 not found", "does not exist", "this post is unavailable")
 NO_VIDEO = ("no video", "unsupported url")
 IMAGE_TYPES = {".jpg", ".jpeg", ".png", ".webp", ".heic"}

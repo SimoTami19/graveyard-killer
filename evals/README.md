@@ -4,7 +4,7 @@ Evals for the `graveyard-killer` and `graveyard-killer-worker` skills, in [skill
 
 ## Capture (`capture.json`)
 
-These evals run on the Mac in Claude Code with the Notion connector, against a test Library that exists only for evals. Build the test Library from [the Library contract](../plugin/skills/graveyard-killer/references/library.md).
+These evals run on the Mac in Claude Code with the Notion connector, against a test Library that exists only for evals. Build the test Library from [the Library contract](../plugin/skills/graveyard-killer/references/library.md) and [its Notion file](../plugin/skills/graveyard-killer/references/library-notion.md).
 
 **Memory.** Every eval except 12 runs with the memory line in place. In Claude Code, memory is a `CLAUDE.md` in the folder the eval runs in:
 

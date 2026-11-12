@@ -2,7 +2,7 @@
 
 A **Ping** is a message a Worker run sends the user on its own. It comes only when the run has something for the user: a **Proposal**, an action on an Entry it just read, or something only the user can fix. Otherwise the run stays silent, except that after 7 days with no Ping it brings the Digest. The Ping is the run's final message, which the run's chat shows the user as it is. The user answers in that chat.
 
-A **Preference** is the user's standing answer to one kind of Proposal: always, ask me, or never. The agent asks for it the first time that kind comes up, and records it in the Settings' Preferences table ([library.md](library.md#the-settings-page)).
+A **Preference** is the user's standing answer to one kind of Proposal: always, ask me, or never. The agent asks for it the first time that kind comes up, and records it in the Settings' Preferences table ([library.md](library.md#the-settings)).
 
 You came here from step 6 of [worker.md](worker.md#steps), or, for [When the user answers](#when-the-user-answers), from SKILL.md. Write everything in the Settings language and in plain words.
 
@@ -19,21 +19,21 @@ Done when you hold the three parts below, each of them possibly empty.
    - Missing tools, with their install commands.
    - Instagram asked for a login, and how many Instagram Entries wait for the next run.
    - Entries this run left with a new Note, in the Inbox or Buried. An Entry that fails again with the Note it already had is not news: it waits for the Digest's Needs you list, so that one dead link does not ping the user every day.
-   - Duplicates this run found: Entries whose Note it set to "Duplicate of". Ask whether to move them to the Notion trash.
+   - Duplicates this run found: Entries whose Note it set to "Duplicate of". Ask whether to [remove them](library.md#remove-a-duplicate).
    - A scheduled run whose prompt is from before version 0.4.0 (it calls the run "unattended"): ask the user to say "update my Graveyard Killer schedule" in the Code tab, which also makes the run daily.
 3. **The Digest,** when "Last Ping" in the Settings' Pings section is 7 or more days ago, or empty, and the Library has Entries Processed since "Last Digest". Gather it as [digest.md](digest.md#give-the-digest) says.
 
 ## Send it
 
-1. **With nothing gathered,** end the run with one line: what it read, or that there was nothing to read. Alert nobody. Done.
+1. **With nothing gathered,** end the run with one line in the Settings language: what it read, or that there was nothing to read. Add a second line only for a limit the user should know about, such as Notion's query limit. Alert nobody. Done.
 2. **Alert the user** through "Ping by" in the Settings' Pings section, with one short line about the most urgent item, such as "Graveyard Killer: the Roma concert is on Saturday". Skip the alert when the run was not scheduled: the user is already in this chat. Done when the alert is sent, or failed and you noted why.
    - **push:** your push notification tool, `PushNotification` in Claude Desktop. From a scheduled run it reaches only this computer, since scheduled runs have no Remote Control, and it skips the alert while the user is active there.
    - **email:** an email to the user's own address through their Gmail connector, saying to open the chat named after the scheduled task in the Claude app.
    - **none**, or empty: no alert. The chat waits in the app's list of runs.
-3. **Record it** in the Settings' Pings section: "Last Ping" is today, and "Last Digest" too when the Ping brings the Digest. Done when both are saved.
+3. **Record it** in the Settings' Pings section, with [Write the Settings](library.md#write-the-settings): "Last Ping" is today, and "Last Digest" too when the Ping brings the Digest. Done when both are saved.
 4. **End the run with the Ping** as your final message, in this order. Done when it is written:
    - one line on what the run did, such as "I read 4 new posts and brought back 2 old ones";
-   - the Proposals, numbered so the user can answer "yes to 1 and 3", each one line with a link to its Entry. Add the Preference question to the first offer of each kind with no Preference yet, such as "For recipes: always, ask me each time, or never?" List the "always" ones you did, as done;
+   - the Proposals, numbered so the user can answer "yes to 1 and 3", each one line with a [link to its Entry](library.md#link-to-an-entry). Add the Preference question to the first offer of each kind with no Preference yet, such as "For recipes: always, ask me each time, or never?" List the "always" ones you did, as done;
    - the fixes;
    - the Digest, when due. Number its Library Proposals after the Ping's own, in one sequence, and leave out its duplicates offer, which the fixes cover.
 
@@ -42,10 +42,10 @@ Done when you hold the three parts below, each of them possibly empty.
 The user answers in the run's chat, maybe hours later. The Ping above in the chat says what was offered: read its numbers and links from there. Done when each answer is acted on.
 
 - A yes to a Proposal: do it, as [On a yes](#on-a-yes) says.
-- A Preference ("always", "never", "stop offering grocery lists"): add or update its row in the Settings' Preferences table, with the kind and the answer in the Settings language. A user can also change a Preference from any chat: "Graveyard Killer, stop offering grocery lists".
-- A yes to the duplicates: move them to the Notion trash. The connector trashes a page only on the user's say-so, and this yes is it. On a no, they stay, and the Digest lists them under Needs you.
+- A Preference ("always", "never", "stop offering grocery lists"): [write the Settings](library.md#write-the-settings), adding or updating its row in the Preferences table, with the kind and the answer in the Settings language. A user can also change a Preference from any chat: "Graveyard Killer, stop offering grocery lists".
+- A yes to the duplicates: [remove them](library.md#remove-a-duplicate). On a no, they stay, and the Digest lists them under Needs you.
 - "I did it" about an Entry: set its Status to the Library's label for Used. "I don't want it": set Dismissed. It stays in the Library.
 
 ## On a yes
 
-Give the result in this chat: a grocery list from the recipe's ingredients, the steps of a workout. Put something in another app only on the user's yes or an "always", and only in the user's own apps through their connectors: a dated event goes in their calendar with the Entry's Title, the date and the Entry's link. With no tool for a step, say so and give the user what they need to do it themselves.
+Give the result in this chat: a grocery list from the recipe's ingredients, the steps of a workout. Put something in another app only on the user's yes or an "always", and only in the user's own apps through their connectors: a dated event goes in their calendar with the Entry's Title, the date and a [link to the Entry](library.md#link-to-an-entry). With no tool for a step, say so and give the user what they need to do it themselves.

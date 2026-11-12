@@ -1,17 +1,22 @@
 # The Library contract
 
-Every Graveyard Killer job reads and writes the Library the same way. This file is the single description of that shape.
+Every Graveyard Killer job reads and writes the Library the same way, whatever app it lives in. This file describes what every Library app shares: the Entries, the Settings and the [operations](#operations) the jobs use. How an app does each operation, and its own rules, are in that app's file.
 
-## Layout
+## Library apps
 
-The **Library** is one Notion page. It holds:
+A Library lives in one **Library app**. The host of the link in the pointer line, `Graveyard Killer Library: <link>`, tells which:
 
-- the **Entries** database, with one row per Entry, titled "Entries" in the Settings language. It is the only database on the Library page, which is how agents find it;
-- a child page titled `Settings`.
+| Link | Library app | Its file |
+| --- | --- | --- |
+| A host that is, or ends in, `notion.so`, `notion.com` or `notion.site`, such as `app.notion.com` or `www.notion.so` | Notion | [library-notion.md](library-notion.md) |
 
-Libraries made before version 0.4.0 also hold Digest pages, titled `Digest YYYY-MM-DD`. Leave them as they are: the Digest is now given in a chat.
+Read your Library app's file before the first operation of a job, and follow it for every operation below. Never read another app's file: it does not apply. If the link matches no row above, it is not a Library link: tell the user so in one line, and stop.
 
-The pointer line, `Graveyard Killer Library: <link>`, points to the Library page.
+A Library holds:
+
+- the **Entries**, one per captured post;
+- the **Settings**;
+- the **shared saves**, when the app has a share route: posts the phone shared into the Library with no agent, which the Worker adopts.
 
 ## Names
 
@@ -19,54 +24,39 @@ The Library uses the user's own names for fields and Statuses, in their language
 
 ## Entry fields
 
-| Field | Notion type | Holds |
+| Field | Kind | Holds |
 | --- | --- | --- |
-| Title | title | A short title in the Settings language. It starts with "⏳ " while the Entry waits for the Worker (Inbox or Buried) |
-| Link | URL | The canonical link, which is also the duplicate key |
-| Platform | select | `Instagram`, `TikTok`, `YouTube` or `Other`. These labels are fixed. The scripts' lowercase `platform` values map to them |
+| Title | text | A short title in the Settings language. It starts with "⏳ " while the Entry waits for the Worker (Inbox or Buried) |
+| Link | link | The canonical link, which is also the duplicate key |
+| Platform | one label | `Instagram`, `TikTok`, `YouTube` or `Other`. These labels are fixed. The scripts' lowercase `platform` values map to them |
 | Author | text | The account that posted it |
-| Caption | text | The post's own text, in its original language |
-| Category | select | One Category from the Settings |
+| Caption | text | The post's own text, word for word, in its original language |
+| Category | one label | One Category from the Settings |
 | Summary | text | In the Settings language: one or two sentences at Capture, two or three after the Worker |
 | Next action | text | The one thing the user could do with it. When the post gives a date for it (an event, a deadline, an offer that ends), the Next action names that date in full, such as "Book the Roma concert for 14 November 2026", so a Ping or the Digest can bring it up in time |
-| Tags | multi-select | Free labels in the Settings language, at most 5 per Entry (see [Writing to Notion](#writing-to-notion)) |
-| Status | select | One Status (see below) |
+| Tags | labels | Free labels in the Settings language, at most 5 per Entry. Reuse an existing Tag wherever one fits, and [add a Tag](#add-a-tag) before using a new one |
+| Status | one label | One Status (see below) |
 | Captured | date | The date of the first Capture. Empty for an Entry imported from the Graveyard |
 | Saved | date | The date the user saved the post on the platform, from the Graveyard import. Empty for a Captured Entry |
 | Processed | date | The date the Worker finished it, as Processed or Unavailable. The Worker's limits and the Digest use it |
 | Note | text | Something about this Entry that needs attention, in the Settings language. It is empty when nothing does |
 
-Each Category can add its own fields. They are named in the Settings and exist as extra text properties in the Entries database.
+Each Category can add its own fields. They are named in the Settings and are extra text fields on the Entries.
 
-The Entry's page body holds what does not fit a field:
+An Entry's **long text** holds what does not fit a field:
 
 - one dated line for each extra Capture of the same post;
-- the full caption, when it is longer than 2,000 characters, Notion's limit for one text value;
+- the full caption, when it is longer than one text value holds in the Library app;
 - a Transcript section and an On-screen text section, written by the Worker. Their headings are "Transcript" and "On-screen text" in the Settings language. Use the same words on every Entry, so look at a Processed Entry for the words already in use (in Italian: "Trascrizione", "Testo a schermo").
 
-## After Capture
+An Entry may also have a **cover**: the post's image, where the Library app shows one.
 
-The Worker knows more about a post than Capture did, and the user may have edited the Entry in between. So the Worker changes an Entry's fields by these rules:
+## Writing to the Library
 
-| Field | The Worker |
-| --- | --- |
-| Title | Removes the leading "⏳ " once the Entry leaves the Inbox or the Graveyard. Replaces the rest only if it is empty, a bare link, or a title that only names the platform and maybe the author, as Capture writes with no preview ("Post Instagram", "Post TikTok di ia_dori", "Post Instagram (solo link)") |
-| Category | Replaces it only if it is the fallback Category |
-| Summary, Next action | Rewrites them from the full post |
-| Tags | Adds Tags and never removes one |
-| Category fields | Fills only empty ones |
-| Author, Caption | Sets them from the post |
-| Link | Replaces a short link with the post's canonical link |
+These rules hold in every Library app. Your app's file adds its own.
 
-When a resolved link shows that two Entries hold the same post, the older Entry stays and gains a "Captured again on <date>" line. The newer one gets the Note "Duplicate of <link to the older Entry>" and goes to the Notion trash once the user agrees, since Notion's connector trashes a page only on the user's say-so.
-
-## Writing to Notion
-
-- **Tags.** A multi-select only accepts values that are already among its options. Reuse an existing Tag wherever one fits. To add a new Tag, add it to the Tag property's options first. The connector's update replaces the whole option list, so read the current options and send every one of them along with the new ones. Leaving one out deletes it from every Entry.
-- **Markdown.** The connector reads text values as Markdown. In text that comes from the post, such as Caption, Author and transcripts, put a backslash before `*`, `_`, `` ` ``, `[` and `]`, so the text stays as the creator wrote it.
-- **Long text.** One text value or page-body block holds at most 2,000 characters. Split longer text into blocks, between sentences.
-- **Song lyrics.** Leave song lyrics out of every field and of the page body, in captions and descriptions as in transcripts.
-- **Links.** Write and save links without a query string, such as the `?pvs=…` that Notion adds.
+- **Song lyrics.** Leave song lyrics out of every field and of the long text, in captions and descriptions as in transcripts.
+- **Labels.** Write Statuses and Categories exactly as the Settings name them, never from memory.
 
 ## Statuses
 
@@ -79,11 +69,15 @@ When a resolved link shows that two Entries hold the same post, the older Entry 
 | Unavailable | The post was deleted or made private before the Worker could download it |
 | Buried | Imported from the Graveyard, waiting to be dug up |
 
-A row in Entries with no Status and a link counts as Inbox: Notion's share sheet, or the user by hand, added it. The Worker adopts it ([worker.md](worker.md#adopt-a-shared-entry)).
+A shared save counts as Inbox. The Worker adopts it ([worker.md](worker.md#adopt-the-shared-saves)).
 
-## The Settings page
+## Duplicates
 
-It has these sections, in this order. Here is an example for an Italian Library:
+When a resolved link shows that two Entries hold the same post, the older Entry stays and gains a "Captured again on <date>" line in its long text. The newer one gets the Note "Duplicate of <[link to the older Entry](#link-to-an-entry)>", and is [removed](#remove-a-duplicate) once the user agrees.
+
+## The Settings
+
+They have these sections, in this order. Here is an example for an Italian Library:
 
 ```markdown
 ## Language
@@ -153,7 +147,7 @@ Ogni giorno 13:00
 | Last import | 2026-10-26 |
 ```
 
-- **Categories.** Exactly one is the fallback. The Category options in the Entries database are the Category names from this table.
+- **Categories.** Exactly one is the fallback. The Category field's choices are the Category names from this table.
 - **Schedule.** When the Worker runs, in local time: every day by default, or the weekdays the user chose.
 - **Limits.** How many posts the Worker may download, counted from the Processed dates ([worker.md](worker.md#steps), step 2).
 - **Pings.** "Ping by" is how a Ping reaches the user: `push`, `email` or `none`. A Library from 0.4.0 may hold `notion`, which never notified the user: treat it as `none` ([ping.md](ping.md#send-it)). "Last Ping" and "Last Digest" are dates, or empty.
@@ -162,14 +156,62 @@ Ogni giorno 13:00
 
 A new Library starts with the Limits above and every other new setting empty. A Library made before version 0.4.0 may lack a section, or still hold "Dig up per run", which the Limits replace. Use the defaults for a missing section, and add the section, in the order shown above, the first time you write to it.
 
-## Querying the Entries
+## Operations
 
-On Notion plans below Business, the connector's filtered and SQL queries share an allowance that resets within the hour. Reading one of the database's views does not count against it (checked 2026-11-11). So:
+The jobs name these operations. Your Library app's file says how to do each one, under the same heading.
 
-- Ask each question once per job and work from the answer. Never query once per post in a loop.
-- To read many Entries, such as every Link for a Graveyard import, page through the Entries database's default view in view mode, and filter what you hold. Fetch the database for its view's link.
-- If Notion says the allowance is used up, read through the default view for the rest of the job, and tell the user once, in one line, that Notion's query limit was reached and resets within the hour.
+### Read the Settings
 
-## Finding an Entry by its link
+Read every section of the Settings.
 
-Query the Entries database for a row whose Link field equals the canonical link exactly. A link that only a redirect can resolve, such as a TikTok link from an export, may sit in the Library under its full form. When you know the post's id, also look for a Link that contains it.
+### Write the Settings
+
+Set a value in a section, or add or update a row in a table section, such as a Preference.
+
+### Find an Entry by its link
+
+Find the Entry whose Link equals the canonical link exactly. A link that only a redirect can resolve, such as a TikTok link from an export, may sit in the Library under its full form: when you know the post's id, also look for a Link that contains it, unless the job asks for an exact match only.
+
+### Query the Entries
+
+Find the Entries with a Status, or with a date in a range, or read one field of many Entries, such as every Link for a Graveyard import. Ask each question once per job and work from the answer. Never query once per post in a loop.
+
+### Search the Entries
+
+Find the Entries whose Title, Summary, Next action, Tags, Author or Caption hold some words, and whose long text does when the app can search it.
+
+### Create an Entry
+
+Add one Entry, or many in batches, with the fields the job gives.
+
+### Update an Entry
+
+Change some of an Entry's fields, add to the end of its long text, or set its cover.
+
+### Add a Category
+
+Add one or more Categories, all in one go: rows in the Settings' Categories table, and choices for the Category field.
+
+### Add a Tag
+
+Make a new Tag available, before the first Entry uses it.
+
+### List the shared saves
+
+Find the shared saves, each with the places its link may sit, in order, and the day it was shared.
+
+### Adopt a shared save
+
+Turn a shared save into an Entry with the fields the Worker gives it, and with the "Shared as" line at the start of its long text when the Worker gives one.
+
+### Remove a duplicate
+
+Remove an Entry whose Note says it is a duplicate, once the user agrees.
+
+### Link to an Entry
+
+Point the user to one Entry in a reply.
+
+### Create the Library
+
+Setup creates the Library as the app's setup file says.

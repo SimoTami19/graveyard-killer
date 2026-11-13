@@ -72,7 +72,7 @@
       "files": [],
       "expectations": [
         "No new Entry is created",
-        "The existing Entry's page body gains a 'Captured again on <date>' line",
+        "The existing Entry's long text gains a 'Captured again on <date>' line",
         "The reply says the post is already in the Library, with its first Capture date and Category"
       ]
     },
@@ -135,7 +135,7 @@
       "expected_output": "Run without the memory line: the agent asks once for the Library link and files nothing yet.",
       "files": [],
       "expectations": [
-        "The agent asks for the link to the Graveyard Killer Library page in Notion",
+        "The agent asks for the link to the Graveyard Killer Library",
         "It asks one question, not several",
         "No Entry is created before the user answers"
       ]

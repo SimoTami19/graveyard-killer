@@ -9,7 +9,7 @@
       "expectations": [
         "The reel Entry's Status is the Library's label for Processed and its Note is empty",
         "Its Author is the account handle and its Caption holds the post's full caption",
-        "Its page body has a Transcript section, and an On-screen text section if the video shows text",
+        "Its long text has a Transcript section, and an On-screen text section if the video shows text",
         "Its Title has no ⏳ and is no longer the link or Capture's '⏳ <Platform> post' title",
         "Its Category is a non-fallback Category when one fits the post",
         "It has no cover, since Instagram has no stable image link",
@@ -35,21 +35,21 @@
       "expectations": [
         "The YouTube Entry keeps the Title Capture wrote, without its ⏳",
         "Its Caption holds the video's description",
-        "Its page body has a Transcript section",
+        "Its long text has a Transcript section",
         "Its Status is the Library's label for Processed",
-        "It has a cover whose external link is on i.ytimg.com"
+        "On Notion, it has a cover whose external link is on i.ytimg.com. Google Drive shows no covers, so nothing is written for one"
       ]
     },
     {
       "id": 4,
       "prompt": "run the Graveyard Killer worker",
-      "expected_output": "Seed: a Processed TikTok Entry, and a newer Inbox Entry holding a different vm.tiktok.com short link to the same video. The newer one is marked as a duplicate, and the agent asks before trashing it.",
+      "expected_output": "Seed: a Processed TikTok Entry, and a newer Inbox Entry holding a different vm.tiktok.com short link to the same video. The newer one is marked as a duplicate, and the agent asks before removing it.",
       "files": [],
       "expectations": [
-        "The older Entry's page body gains a 'Captured again on <date>' line with the newer Entry's Captured date",
+        "The older Entry's long text gains a 'Captured again on <date>' line with the newer Entry's Captured date",
         "The newer Entry's Note says it duplicates the older Entry",
-        "The Ping at the end lists the duplicate and asks once whether to move it to the trash",
-        "After a yes, the newer Entry is in the Notion trash"
+        "The Ping at the end lists the duplicate and asks once whether to remove it, in the words {{LIBRARY_APP}}'s file gives",
+        "After a yes, the newer Entry is removed: on Notion its page is in the trash, on Google Drive its row is deleted"
       ]
     },
     {
@@ -66,10 +66,10 @@
     {
       "id": 6,
       "prompt": "run the Graveyard Killer worker",
-      "expected_output": "Seed: no Entry has Status Inbox or no Status, and none is Buried. The Worker reports that there is nothing to do.",
+      "expected_output": "Seed: no Entry is in the Inbox or Buried, and there is no shared save. The Worker reports that there is nothing to do.",
       "files": [],
       "expectations": [
-        "No Entry is created, changed or moved to the trash",
+        "No Entry is created, changed or removed",
         "The run ends with one line saying there was nothing to read, and sends no alert"
       ]
     },
@@ -110,19 +110,20 @@
       "files": [],
       "expectations": [
         "Neither Graveyard Killer skill starts a Worker run",
-        "No Entry is created, changed or moved to the trash"
+        "No Entry is created, changed or removed"
       ]
     },
     {
       "id": 11,
       "prompt": "run the Graveyard Killer worker",
-      "expected_output": "Seed: a row added to Entries through Notion's share sheet: a public Instagram reel's link in its title, no Status, no Link. The Worker adopts it and finishes it.",
+      "expected_output": "Seed: a public Instagram reel shared through {{LIBRARY_APP}}'s share route. On Notion that is a row in Entries with the reel's link in its title, no Status and no Link; on Google Drive, a file in \"Share here\" holding the reel's link. The Worker adopts it and finishes it.",
       "files": [],
       "expectations": [
-        "The row's Link holds the reel's canonical link and its Platform is Instagram",
-        "Its Captured date is the day the row was created",
+        "An Entry's Link holds the reel's canonical link and its Platform is Instagram",
+        "Its Captured date is the day it was shared",
         "Its Status is the Library's label for Processed and its Title has no ⏳",
-        "If the shared title was more than the link, the page body starts with a 'Shared as' line holding it"
+        "If the shared title was more than the link, its long text starts with a 'Shared as' line holding it",
+        "On Google Drive, the shared file is now in \"Already read\", and \"Share here\" is empty"
       ]
     },
     {

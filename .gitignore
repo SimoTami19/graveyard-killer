@@ -2,3 +2,6 @@
 __pycache__/
 .pytest_cache/
 .mypy_cache/
+
+# Eval runs: test Library links stay local
+evals/local.json

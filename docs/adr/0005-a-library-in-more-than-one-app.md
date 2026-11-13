@@ -14,8 +14,9 @@ Some users keep their life in Google Drive and have no Notion account, and more 
 
 - A Drive Library is one Sheet, with an Entries tab and a Settings tab laid out like the Notion Settings page, and two folders named in the Settings language: "Share here", where the phone shares, and "Already read", where the Worker moves each shared file once read. The pointer links to the Sheet, and the Settings hold the folders' links.
 - On Drive, users sort and move rows and columns, and a row has no address that survives a sort. So rows are found by their Link and columns by their header, every time, and an Entry is named by its Title and Link instead of a link to it.
-- On Drive, dates are written as `=DATE(y,m,d)`, so they sort and filter like dates the user types. Long text, such as the transcript, goes in the last columns, and a Doc holds only a value past a cell's 50,000 characters.
+- On Drive, dates are written as `=DATE(y,m,d)` in columns formatted `yyyy-mm-dd`, so they sort and filter like dates the user types and read back as `2026-11-12`. Long text, such as the transcript, goes in the last columns. One Sheets read returns about 40,000 characters (measured 2026-11-13), so a Drive Library is read one column at a time, in pages of 200 rows, and a Doc holds a value past 30,000 characters. Sheets shows no covers, so a Drive Entry has none.
 - A duplicate row on Drive is deleted after the user's yes. Unlike Notion's trash, only the Sheet's version history brings it back.
+- A shared save that holds no link is set aside: on Drive it moves to "Already read" and the next Ping names it; on Notion the row stays where it is.
 - Saving from the phone into a Drive Library is Share, then Drive, then "Share here", as Notion's share sheet is for Notion ([ADR-0004](0004-notion-share-sheet-captures.md)). It was tested on Android; iOS is untested.
 - Setup always asks which Library app, recommending Notion. A later release lets a user move a Library to another app by copying it; the old Library stays as it was.
 - The evals stay one set with a Library-app placeholder, plus a few evals for Drive alone, each run against a test Library in that app.

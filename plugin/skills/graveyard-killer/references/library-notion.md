@@ -85,6 +85,10 @@ Query the Entries for rows with no Status, in the same query as the Inbox when t
 
 Update the row itself with the fields the Worker gives. Its old title is the text it was shared with. Put the "Shared as" line at the start of the page body, before anything already there.
 
+### Set a shared save aside
+
+Leave the row as it is: Notion has no place to move it to. Each run skips it again, and the Ping does not name it.
+
 ### Remove a duplicate
 
 Move the Entry's page to the Notion trash. When you ask the user, and when you tell them it is done, call it moving to the trash. The connector trashes a page only on the user's say-so, and their yes is it.

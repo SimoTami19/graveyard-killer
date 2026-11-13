@@ -9,6 +9,7 @@ A Library lives in one **Library app**. The host of the link in the pointer line
 | Link | Library app | Its file |
 | --- | --- | --- |
 | A host that is, or ends in, `notion.so`, `notion.com` or `notion.site`, such as `app.notion.com` or `www.notion.so` | Notion | [library-notion.md](library-notion.md) |
+| A Google Sheet: the host `docs.google.com`, with a path that starts with `/spreadsheets/` | Google Drive | [library-google-drive.md](library-google-drive.md) |
 
 Read your Library app's file before the first operation of a job, and follow it for every operation below. Never read another app's file: it does not apply. If the link matches no row above, it is not a Library link: tell the user so in one line, and stop.
 
@@ -203,6 +204,10 @@ Find the shared saves, each with the places its link may sit, in order, and the 
 ### Adopt a shared save
 
 Turn a shared save into an Entry with the fields the Worker gives it, and with the "Shared as" line at the start of its long text when the Worker gives one.
+
+### Set a shared save aside
+
+Put a shared save that holds no link out of the Worker's way, when the app has a place for it. The Ping names each one moved.
 
 ### Remove a duplicate
 

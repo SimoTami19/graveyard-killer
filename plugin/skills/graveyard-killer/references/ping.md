@@ -20,12 +20,13 @@ Done when you hold the three parts below, each of them possibly empty.
    - Instagram asked for a login, and how many Instagram Entries wait for the next run.
    - Entries this run left with a new Note, in the Inbox or Buried. An Entry that fails again with the Note it already had is not news: it waits for the Digest's Needs you list, so that one dead link does not ping the user every day.
    - Duplicates this run found: Entries whose Note it set to "Duplicate of". Ask whether to [remove them](library.md#remove-a-duplicate).
+   - Shared saves this run moved out of the way because they held no link, when [Set a shared save aside](library.md#set-a-shared-save-aside) moved them: one line naming them, such as "1 shared save held no link: <name>".
    - A scheduled run whose prompt is from before version 0.4.0 (it calls the run "unattended"): ask the user to say "update my Graveyard Killer schedule" in the Code tab, which also makes the run daily.
 3. **The Digest,** when "Last Ping" in the Settings' Pings section is 7 or more days ago, or empty, and the Library has Entries Processed since "Last Digest". Gather it as [digest.md](digest.md#give-the-digest) says.
 
 ## Send it
 
-1. **With nothing gathered,** end the run with one line in the Settings language: what it read, or that there was nothing to read. Add a second line only for a limit the user should know about, such as Notion's query limit. Alert nobody. Done.
+1. **With nothing gathered,** your whole final message is one line in the Settings language: what the run read, or that there was nothing to read. Add a second line only for a limit the user should know about, such as Notion's query limit. Write no list and no other line: an Entry that failed again with the Note it already had waits for the Digest. Alert nobody. Done.
 2. **Alert the user** through "Ping by" in the Settings' Pings section, with one short line about the most urgent item, such as "Graveyard Killer: the Roma concert is on Saturday". Skip the alert when the run was not scheduled: the user is already in this chat. Done when the alert is sent, or failed and you noted why.
    - **push:** your push notification tool, `PushNotification` in Claude Desktop. From a scheduled run it reaches only this computer, since scheduled runs have no Remote Control, and it skips the alert while the user is active there.
    - **email:** an email to the user's own address through their Gmail connector, saying to open the chat named after the scheduled task in the Claude app.

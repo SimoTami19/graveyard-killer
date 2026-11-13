@@ -10,7 +10,7 @@ Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard 
 
 1. **What do they save?** Ask what kinds of posts the user saves, such as recipes, places, workouts or AI prompts. If the user mentions an Instagram export already on the computer, run `python3 scripts/graveyard.py "<path>"` and offer its `collections` as Categories. Add one fallback Category for everything else, and confirm the list with the user in one question. Done when you have 2 to 8 Categories, each with a line on what goes in it, and maybe its own fields (a recipe's ingredients, a place's location).
 
-2. **Create the Library.** The Library app is Notion. Read [library.md](library.md), then follow [setup-notion.md](setup-notion.md#create-the-library). Done when you can read the Settings back.
+2. **Create the Library.** Ask in one question which Library app the Library should live in: Notion or Google Drive. Recommend Notion, the app Graveyard Killer was built on, which also shows each post's image; Google Drive suits a user with no Notion account or whose files live in Drive. Read [library.md](library.md) and the chosen app's file, then follow its setup file: [setup-notion.md](setup-notion.md#create-the-library) or [setup-google-drive.md](setup-google-drive.md#create-the-library). Done when you can read the Settings back.
 
 3. **Pick the time.** Ask at what time the Worker should run every day. Suggest a time when the computer is usually on and awake, such as lunchtime, and say that it runs only while the Claude app is open and the computer is awake. Write the answer in the Settings' Schedule section. Done when the Settings hold it.
 
@@ -24,7 +24,7 @@ Setup starts when the user asks to set up Graveyard Killer, or when a Graveyard 
 
 8. **Set up the phone.** Walk the user through it, one step at a time. Done when a shared post arrived in the Library, or the user says they will do it later.
    - **The pointer.** The Claude apps on the phone and the computer share one set of Instructions, in *Settings → Your Claude → Instructions* (in the Italian app *Impostazioni → Il tuo Claude → Istruzioni*; in another language, give the path in English), which apply to every chat. Give them [the pointer](#the-pointer) to paste there. You cannot write it yourself.
-   - **Save through the Library app.** The main way to save, as [setup-notion.md](setup-notion.md#save-from-the-phone) says.
+   - **Save through the Library app.** The main way to save, as your Library app's setup file says: [setup-notion.md](setup-notion.md#save-from-the-phone) or [setup-google-drive.md](setup-google-drive.md#save-from-the-phone).
    - **Save through Claude.** The second way: share the post to the Claude app's Chat with no text. It costs a short chat, and for TikTok, YouTube and web links it writes a first summary at once. From Instagram it gets only the link.
 
 9. **Pick how Pings arrive.** Explain that a run sends a Ping only when it has an offer for them or a problem only they can fix, and that they answer in that run's chat, in Claude Desktop on this computer: a scheduled run cannot be opened from the phone. Offer, and write the choice to "Ping by" in the Settings' Pings section. Then send a test Ping through it and ask whether it arrived. Done when the user confirms, or chose `none`.

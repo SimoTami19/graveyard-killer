@@ -17,7 +17,7 @@ You came here from the `graveyard-killer-worker` skill, or from Setup or Recall 
    - **Downloads.** [Query the Entries](library.md#query-the-entries) and count those whose Platform is not Other and whose Processed date is today, and those whose Processed date falls in the last 7 days, today included. Processed is set on every Entry the Worker finished, Unavailable ones included. The budget is the smaller of "Downloads per day" minus today's count and "Downloads per week" minus the week's count, from the Settings' Limits (20 and 100 when missing). Below zero counts as zero.
    - **Plan usage.** If you have a tool that reports the plan's usage limits, such as Claude Desktop's `get_usage`, read the weekly limit for all models. At 90% or more, the budget is zero. At 70% or more, Dig up is off. With no such tool, or when it fails, the download budget alone applies.
 
-3. **List the Inbox.** [Query the Entries](library.md#query-the-entries) whose Status is the Library's label for Inbox, and [list the shared saves](library.md#list-the-shared-saves). Done when you hold the list in order and every shared save is adopted or left alone as not a post.
+3. **List the Inbox.** [Query the Entries](library.md#query-the-entries) whose Status is the Library's label for Inbox, and [list the shared saves](library.md#list-the-shared-saves). Done when you hold the list in order and every shared save is adopted or set aside as not a post.
    - [Adopt the shared saves](#adopt-the-shared-saves) first.
    - Leave out the Entries whose Note says "Duplicate of": they wait for the user's answer.
    - Order the Entries with no Note by Captured, oldest first, then by when they were created. The Entries with a Note, which a past run could not read, come after them.
@@ -34,10 +34,10 @@ When the user answers in this chat, later or at once, act as [ping.md](ping.md#w
 
 ## Adopt the shared saves
 
-A shared save came in through the Library app's share route, or the user added it by hand, with no agent. Do these steps for each one. Done when each is an Inbox Entry, a merged duplicate, or left as it was.
+A shared save came in through the Library app's share route, or the user added it by hand, with no agent. Do these steps for each one. Done when each is an Inbox Entry, a merged duplicate, or set aside.
 
-1. **Find the link** in the places [List the shared saves](library.md#list-the-shared-saves) gives, in that order. With no link anywhere, leave the shared save as it is: it is not a post.
-2. **Clean it** with the link script, passing the link through a quoted heredoc: `python3 scripts/link.py <<'MESSAGE'`, the link, then `MESSAGE`. An `{"error": "no link"}` result: leave the shared save as it is. An `{"unsupported": "story"}` result: [adopt it](library.md#adopt-a-shared-save) with Status set to the Library's label for Unavailable and a Note saying that Stories cannot be kept, and stop.
+1. **Find the link** in the places [List the shared saves](library.md#list-the-shared-saves) gives, in that order. With no link anywhere, [set it aside](library.md#set-a-shared-save-aside): it is not a post.
+2. **Clean it** with the link script, passing the link through a quoted heredoc: `python3 scripts/link.py <<'MESSAGE'`, the link, then `MESSAGE`. An `{"error": "no link"}` result: [set it aside](library.md#set-a-shared-save-aside). An `{"unsupported": "story"}` result: [adopt it](library.md#adopt-a-shared-save) with Status set to the Library's label for Unavailable and a Note saying that Stories cannot be kept, and stop.
 3. **Fill the fields:** [adopt it](library.md#adopt-a-shared-save) with Link set to the cleaned link, Platform from the script, Status Inbox, Captured with the day it was shared, the fallback Category, and the Title "⏳ <Platform> post" in the Settings language. When the text it was shared with was more than the link, move that text to the start of the long text as "Shared as: <text>", in the Settings language.
 4. **Check for a duplicate** by the cleaned link ([Find an Entry by its link](library.md#find-an-entry-by-its-link)), leaving out this one. If another Entry has it, the other Entry stays: add "Captured again on <this one's Captured date>" to the end of its long text, and set this one's Note to "Duplicate of <[link to the other Entry](library.md#link-to-an-entry)>". The Ping asks before it is removed.
 

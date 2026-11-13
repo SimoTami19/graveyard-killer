@@ -16,6 +16,11 @@ This page records v1. Version 0.4.0 changes it after the launch feedback; where 
 
 - **Library apps.** A Library lives in one Library app. Jobs name the operations in `library.md`, and each app has its own files that say how it does them, so an agent loads only its own app's rules ([ADR-0005](adr/0005-a-library-in-more-than-one-app.md)). Notion is the only app in 0.4.4; Google Drive follows.
 
+## Changed in 0.5.0
+
+- **Google Drive** is the second Library app: one Sheet with an Entries tab and a Settings tab, and the folders "Share here" and "Already read" ([ADR-0005](adr/0005-a-library-in-more-than-one-app.md)). Setup asks which app, recommending Notion.
+- **A shared save with no link** is set aside. On Drive it moves to "Already read" and the next Ping names it; on Notion it stays where it is.
+
 ## Parts
 
 - **Plugin.** A Claude plugin marketplace with one plugin. Inside it is a standard Agent Skill: `SKILL.md` plus Python scripts. Both scripts, Capture's link script and the Worker's post script, use only the Python standard library and run with `python3`, so the link script also runs in a phone app's sandbox. The tools the post script calls (yt-dlp, gallery-dl, Whisper) are installed with uv. Everything is written in English, and the agent talks in the user's language.
@@ -105,7 +110,11 @@ Setup is a conversation on the computer, in the Code tab, after the plugin is ad
 - [x] The Digest brings up a near date and offers content-based Proposals. (2026-10-26: two fresh-agent "mostrami il riepilogo" runs on "Graveyard Killer Digest Test", a copy of the test Library with four made-up Entries: an event on 7 November, a recipe, a dug-up trek, an Inbox Entry with a Note. Run 1 listed Entries twice and flagged nine unclear lines; digest.md was fixed. Run 2 put the event under "In programma", each Entry once, and offered the calendar, a shopping list and a new Category, acting on none. The Worker writing a date into a real post's Next action is not tested yet.)
 - [x] Instagram carousels and photo posts can be read without a login. (2026-10-25: gallery-dl was sent to the login page. yt-dlp with `--ignore-no-formats-error` read a 7-slide carousel's caption, its account and its 720x900 images, so yt-dlp reads photo posts and gallery-dl is only the fallback.)
 - [ ] yt-dlp or gallery-dl reads TikTok photo posts.
-- [ ] Claude's Sheets connector can append rows to an existing sheet.
+- [x] Claude's Sheets connector can append rows to an existing sheet. (2026-11-12: `appendCells` and `updateCells` through `update_spreadsheet`, with text as `stringValue`, keep `=1+1`, `+39 333`, `3/4` and `007` as written, fill the empty rows below the data and keep the column's dropdown. `update_values` and `append_values` parse values as if typed, and appended rows lose the dropdown.)
+- [x] Dates on Drive sort and read back as dates. (2026-11-13: `=DATE(2026,11,12)` sorts and counts as a date. It reads back through `get_values` as `2026-11-12` in a column formatted `yyyy-mm-dd`, and as `12/11/2026` in an en_GB Sheet without that format, so Setup formats the date columns.)
+- [x] How much one Sheets read returns. (2026-11-13, a 1,000-row test tab, in Claude Code: one ~40-character column of 1,000 rows came back whole, about 38,000 characters. Five short columns of 1,000 rows (330,000 characters), and of 200 rows (66,000), were refused as larger than the tool result's limit and saved to a file. So a Drive Library is read one column at a time, in pages of 200 rows, and long cells one at a time.)
+- [ ] A phone Capture and a Worker run write to a Drive Library at the same moment without colliding. (`appendCells` runs on Google's side, and three back-to-back writes did not collide on 2026-11-12. A real simultaneous write is untested.)
+- [ ] Saving from an iPhone through Drive's share sheet. (Tested on Android on 2026-11-11, by the contributor who proposed the Drive Library.)
 - [ ] The Instagram export parser handles a real export, including collections with no save date.
 - [x] Anonymous yt-dlp works for public reels from a home connection. (2026-10-24, yt-dlp 2026.10.21, metadata only, no cookies: an Instagram reel gave its author, its full caption and 8 formats. A TikTok short link gave its author, its caption and 10 formats.)
 - [x] The Worker runs on Sonnet. (2026-11-11, CLI with the plugin loaded from the repo: a plain `model: sonnet` line did nothing when the model invoked the skill, and every turn ran on Opus. With `context: fork`, Sonnet did the Worker's work and Opus only started it and passed on its message. Not yet checked in a Desktop scheduled task: [#4](https://github.com/andreadorizza/graveyard-killer/issues/4).)

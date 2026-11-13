@@ -1,0 +1,59 @@
+{
+  "skill_name": "graveyard-killer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "run the Graveyard Killer worker",
+      "expected_output": "Seed, in \"Share here\": a text file named 'Me at the zoo' holding 'Guarda https://youtu.be/jNQXAC9IVRw?si=AbCdEfGh123', as YouTube's share to Drive saves it, and a text file named 'appunti.txt' holding 'latte, uova, farina' and no link. The video must not be in the Library yet. The Worker adopts the first as a new Entry, finishes it, and moves both files to \"Already read\". The Ping names the file with no link.",
+      "files": [],
+      "expectations": [
+        "Exactly one new Entry exists, and its Link is https://www.youtube.com/watch?v=jNQXAC9IVRw",
+        "Its Platform is YouTube and its Status is the Library's label for Processed",
+        "Its Captured date is the day the file was created",
+        "Its Captures cell starts with a 'Shared as' line holding the shared text",
+        "Both files are in \"Already read\", and \"Share here\" is empty",
+        "No Entry exists for appunti.txt",
+        "The final message names appunti.txt in one line as a shared file that held no link"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "https://en.wikipedia.org/wiki/%3D_(album)",
+      "expected_output": "One Inbox Entry for the article on Ed Sheeran's album \"=\", whose title and first line start with '='. Every text from the page stays text in the Sheet.",
+      "files": [],
+      "expectations": [
+        "Exactly one new Entry exists, and its Link is https://en.wikipedia.org/wiki/%3D_(album)",
+        "Its Caption holds the page's title or first line, starting with '=', such as '= (album)'",
+        "The Caption cell shows that text as written, not a formula result or an error: read through get_spreadsheet, its userEnteredValue is a stringValue",
+        "Every other non-empty cell of the row is a stringValue, except the dates, which are =DATE formulas"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "https://en.wikipedia.org/wiki/Cacio_e_pepe",
+      "expected_output": "Seed: three Processed Entries, for https://en.wikipedia.org/wiki/Amatriciana (Title 'Amatriciana', Captured 2026-11-01), https://en.wikipedia.org/wiki/Cacio_e_pepe (Title 'Cacio e pepe', Captured 2026-11-02) and https://en.wikipedia.org/wiki/Gricia (Title 'Gricia', Captured 2026-11-03), all Platform Other and Category Ricette. Then, as the user would, the Entries tab is sorted by Title Z to A, and the Captures column is moved to sit first, before the Title. The Capture finds the Cacio e pepe Entry by its Link and its columns by their headers.",
+      "files": [],
+      "expectations": [
+        "No new Entry is created",
+        "The Cacio e pepe row's Captures cell holds a 'Captured again on <today>' line",
+        "The Amatriciana and Gricia rows are unchanged",
+        "No other cell of the Cacio e pepe row changed",
+        "The reply says the post is already in the Library, with its first Capture date, 2026-11-02, and its Category"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "run the Graveyard Killer worker",
+      "expected_output": "Seed: the Processed Entry for https://www.youtube.com/watch?v=dQw4w9WgXcQ that Capture eval 5 and a Worker run left, and a newer Inbox Entry with the Link https://youtu.be/dQw4w9WgXcQ, the Title '⏳ Post YouTube', the fallback Category and Captured today. The Worker finds that the newer Entry holds the same video, marks it as a duplicate, and asks before deleting its row. Then answer 'sì, eliminalo' with run_evals.py resume.",
+      "files": [],
+      "expectations": [
+        "The older Entry's Captures cell gains a 'Captured again on <the newer Entry's Captured date>' line",
+        "The newer Entry's Note says it duplicates the older Entry, naming it by its Title and Link",
+        "The Ping lists the duplicate and asks once whether to delete its row, saying that only the Sheet's version history can bring it back",
+        "Before the reply, both rows are still in the Sheet",
+        "After 'sì, eliminalo', the newer Entry's row is deleted and the older Entry's row is unchanged",
+        "No other row is deleted"
+      ]
+    }
+  ]
+}

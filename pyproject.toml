@@ -14,7 +14,7 @@ addopts = "-m 'not live'"
 
 [tool.mypy]
 strict = true
-files = ["plugin/skills/graveyard-killer/scripts", "tests"]
+files = ["plugin/skills/graveyard-killer/scripts", "tests", "evals"]
 
 [[tool.mypy.overrides]]
 # Windows-only test dependency with no type hints: absent on macOS and Linux, untyped on Windows.

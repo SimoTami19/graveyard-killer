@@ -21,7 +21,9 @@ import pathlib
 import subprocess
 import sys
 import tempfile
-from typing import Any
+import threading
+import time
+from typing import IO, Any
 
 HERE = pathlib.Path(__file__).resolve().parent
 REPO = HERE.parent
@@ -29,12 +31,16 @@ REPO = HERE.parent
 RUNS = pathlib.Path(tempfile.gettempdir()) / "gk-evals"
 
 APPS: dict[str, dict[str, Any]] = {
-    "notion": {"name": "Notion", "tools": ["mcp__claude_ai_Notion"]},
+    "notion": {"name": "Notion", "tools": ["mcp__claude_ai_Notion"], "servers": ["claude.ai Notion"]},
     "google-drive": {
         "name": "Google Drive",
         "tools": ["mcp__claude_ai_Google_Drive", "mcp__claude_ai_Google_Sheets"],
+        "servers": ["claude.ai Google Drive", "claude.ai Google Sheets"],
     },
 }
+# A session whose app connectors are still pending, or missing, when it starts fails to reach the Library
+# (seen on 2026-11-13). The runner stops such a session at once and starts it again, this many times in all.
+ATTEMPTS = 3
 NO_MEMORY = {("capture", 12)}
 SETTINGS = json.dumps(
     {"claudeMdExcludes": [str(pathlib.Path.home() / ".claude" / "CLAUDE.md"), str(pathlib.Path.home() / ".claude" / "projects") + "/**"]}
@@ -73,14 +79,50 @@ def command(app: str, prompt: str) -> list[str]:
             "--allowedTools", *allowed, "--disallowedTools", *disallowed]
 
 
-def run(folder: pathlib.Path, cmd: list[str], resume: bool = False) -> None:
+def connectors_ready(event: dict[str, Any], app: str) -> bool:
+    """Whether a session's init event shows every connector of the app as connected."""
+    status = {server.get("name"): server.get("status") for server in event.get("mcp_servers", [])}
+    return all(status.get(name) == "connected" for name in APPS[app]["servers"])
+
+
+def attempt(cmd: list[str], cwd: pathlib.Path, out: IO[str], app: str) -> str:
+    """Stream one session into out. Return "done", "timeout", or "not ready" after stopping it at its start."""
+    proc = subprocess.Popen(cmd, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, encoding="utf-8")
+    timer = threading.Timer(3600, proc.kill)
+    timer.start()
+    try:
+        assert proc.stdout is not None
+        for line in proc.stdout:
+            out.write(line)
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if event.get("type") == "system" and event.get("subtype") == "init" and not connectors_ready(event, app):
+                proc.kill()
+                proc.wait()
+                return "not ready"
+        proc.wait()
+        return "done" if timer.is_alive() else "timeout"
+    finally:
+        timer.cancel()
+
+
+def run(folder: pathlib.Path, cmd: list[str], app: str, resume: bool = False) -> None:
     """Run one session. A resumed session adds to the run's stream; a new run starts it again."""
     cwd = folder / "cwd"
     with open(folder / "out.jsonl", "a" if resume else "w", encoding="utf-8") as out:
-        try:
-            subprocess.run(cmd, cwd=cwd, stdout=out, stderr=subprocess.STDOUT, timeout=3600)
-        except subprocess.TimeoutExpired:
-            print(f"=== {folder.name}: timed out after an hour", flush=True)
+        for number in range(1, ATTEMPTS + 1):
+            start = out.tell()
+            outcome = attempt(cmd, cwd, out, app)
+            if outcome != "not ready":
+                break
+            out.truncate(start)
+            out.seek(start)
+            print(f"--- {folder.name}: connectors not ready at start, try {number} of {ATTEMPTS}", flush=True)
+            time.sleep(15)
+        if outcome != "done":
+            print(f"=== {folder.name}: {outcome}", flush=True)
             return
     result, session = "", ""
     for line in (folder / "out.jsonl").read_text(encoding="utf-8").splitlines():
@@ -121,11 +163,11 @@ def main() -> None:
     if kind == "resume":
         folder = RUNS / app / sys.argv[3]
         session = (folder / "session.txt").read_text(encoding="utf-8").strip()
-        run(folder, [*command(app, sys.argv[4]), "--resume", session], resume=True)
+        run(folder, [*command(app, sys.argv[4]), "--resume", session], app, resume=True)
         return
     if kind == "prompt":
         folder = prepare(app, sys.argv[3], library, memory=True)
-        run(folder, command(app, fill(sys.argv[4], app, placeholders)))
+        run(folder, command(app, fill(sys.argv[4], app, placeholders)), app)
         return
 
     evals = {e["id"]: e for e in json.loads((HERE / f"{kind}.json").read_text(encoding="utf-8"))["evals"]}
@@ -135,7 +177,7 @@ def main() -> None:
         lines = [f"# {kind} {eval_id} on {APPS[app]['name']}", "", fill(spec["expected_output"], app, placeholders), ""]
         lines += [f"- {fill(x, app, placeholders)}" for x in spec["expectations"]]
         (folder / "expectations.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
-        run(folder, command(app, fill(spec["prompt"], app, placeholders)))
+        run(folder, command(app, fill(spec["prompt"], app, placeholders)), app)
 
 
 if __name__ == "__main__":

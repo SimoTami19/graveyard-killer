@@ -141,7 +141,7 @@ Read the Link and Note cells of its row n to check it is the duplicate, then del
 
 ### Link to an Entry
 
-A Sheet has no link to one row that survives a sort. Name the Entry by its Title, and give its Link.
+A Sheet has no link to one row that survives a sort. So name the Entry by its Title and give its Link, every time, such as «Pasta alla Norma» (https://it.wikipedia.org/wiki/Pasta_alla_Norma).
 
 ### Create the Library
 

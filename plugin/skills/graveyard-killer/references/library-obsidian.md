@@ -56,6 +56,8 @@ The shared saves are the files in "Share here".
 
 Every command prints one JSON object. An `{"error": …}` result means the step failed: say what failed, as the job says.
 
+**When the Library cannot be read,** as SKILL.md's step 3 says, tell the user that its folder could not be read on this computer, and that a phone cannot reach it at all: an Obsidian Library is read only from the computer that holds the vault.
+
 ## Operations
 
 `<library>` is the Library link from the pointer, quoted.
@@ -95,7 +97,7 @@ Each answer holds `note`, the path to pass to `update`, with the properties aske
 
 ### Update an Entry
 
-`obsidian.py update` with its `note`. A "Captured again" line goes in `append` under Captures; the transcript under Transcript, one paragraph per block, with a blank line between paragraphs; the on-screen text under On-screen text. For the cover, pass the `thumbnail` path that `post.py read` printed as `cover_file`, before you run `post.py clean`: Instagram's image links expire, a copied file does not.
+`obsidian.py update` with its `note`. A "Captured again" line goes in `append` under Captures; the transcript under Transcript, one paragraph per block, with a blank line between paragraphs; the on-screen text under On-screen text. Take the cover from the `thumbnail` file, whether or not there is a `cover_url`: pass the `thumbnail` path that `post.py read` printed as `cover_file`, before you run `post.py clean`: Instagram's image links expire, a copied file does not.
 
 ### Add a Category
 

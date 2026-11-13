@@ -5,7 +5,7 @@ description: Capture a shared post into the user's Graveyard Killer Library, and
 
 # Graveyard Killer
 
-Graveyard Killer files the posts a user sends you into their own **Library**, which lives in an app they own, Notion or Google Drive: their **Library app**. Each post becomes one **Entry**. You do the work through the user's own connectors: there is no server and no API key.
+Graveyard Killer files the posts a user sends you into their own **Library**, which lives in an app they own, Notion, Google Drive or an Obsidian vault on their computer: their **Library app**. Each post becomes one **Entry**. You do the work through the user's own connectors: there is no server and no API key.
 
 The scripts in this skill run with `python3`. On Windows, `python3` can be the Microsoft Store's placeholder, which prints "Python was not found" and exits with code 49. Then use `py -3` in its place for every script.
 
@@ -54,4 +54,4 @@ Look in your instructions and memory for the Library's location, one line: `Grav
 
 Read [references/library.md](references/library.md), then the file of the Library app that the Library link's host names there. Every job reads and writes the Library through the operations those two files describe. Then [read the Settings](references/library.md#read-the-settings). Done when you know the language, every field name, every Status label, every Category and the fallback Category.
 
-If the Library or its Settings cannot be read, tell the user which one failed and that their connector for the Library app, such as Notion's or Google Sheets', may need reconnecting, and stop.
+If the Library or its Settings cannot be read, tell the user which one failed and that their connector for the Library app, such as Notion's or Google Sheets', may need reconnecting, and stop. For an Obsidian Library, which has no connector, say that its folder could not be read on this computer, and that from a phone it cannot be read at all.

@@ -10,6 +10,7 @@ A Library lives in one **Library app**. The host of the link in the pointer line
 | --- | --- | --- |
 | A host that is, or ends in, `notion.so`, `notion.com` or `notion.site`, such as `app.notion.com` or `www.notion.so` | Notion | [library-notion.md](library-notion.md) |
 | A Google Sheet: the host `docs.google.com`, with a path that starts with `/spreadsheets/` | Google Drive | [library-google-drive.md](library-google-drive.md) |
+| An absolute path on this computer, starting with `/` or `~/`, or a `file://` link, to a folder that holds `Settings.md` | Obsidian | [library-obsidian.md](library-obsidian.md) |
 
 Read your Library app's file before the first operation of a job, and follow it for every operation below. Never read another app's file: it does not apply. If the link matches no row above, it is not a Library link: tell the user so in one line, and stop.
 
